@@ -98,7 +98,7 @@ class ThesisSettingsForm extends Form {
 	}
 
 	/**
-	 * Save settings. 
+	 * Save settings.
 	 */
 	function execute() {
 		$plugin =& $this->plugin;

@@ -56,13 +56,13 @@ class DataversePlugin extends GenericPlugin {
 			$returner =& DAORegistry::registerDAO('DataverseStudyDAO', $dataverseStudyDao);
 
 			// Files associated with Dataverse studies
-			$this->import('classes.DataverseFileDAO');			
-			$dataverseFileDao = new DataverseFileDAO($this->getName());			 
+			$this->import('classes.DataverseFileDAO');
+			$dataverseFileDao = new DataverseFileDAO($this->getName());
 			$returner =& DAORegistry::registerDAO('DataverseFileDAO', $dataverseFileDao);
-					
+
 			// Handler for public (?) access to Dataverse-related information (i.e., terms of Use)
 			HookRegistry::register('LoadHandler', array(&$this, 'setupPublicHandler'));
-			// Add data citation to submissions & reading tools	 
+			// Add data citation to submissions & reading tools
 			HookRegistry::register('TemplateManager::display', array(&$this, 'handleTemplateDisplay'));
 			// Add data citation to article landing page
 			HookRegistry::register('Templates::Article::MoreInfo', array(&$this, 'addDataCitationArticle'));
@@ -70,35 +70,35 @@ class DataversePlugin extends GenericPlugin {
 			HookRegistry::register('TinyMCEPlugin::getEnableFields', array(&$this, 'getTinyMCEEnabledFields'));
 			// Include data policy in About page
 			HookRegistry::register('Templates::About::Index::Policies', array(&$this, 'addPolicyLinks'));
-			
-			// Add data publication options to author submission suppfile form: 
+
+			// Add data publication options to author submission suppfile form:
 			HookRegistry::register('Templates::Author::Submit::SuppFile::AdditionalMetadata', array(&$this, 'suppFileAdditionalMetadata'));
 			HookRegistry::register('authorsubmitsuppfileform::initdata', array(&$this, 'suppFileFormInitData'));
 			HookRegistry::register('authorsubmitsuppfileform::readuservars', array(&$this, 'suppFileFormReadUserVars'));
 			HookRegistry::register('authorsubmitsuppfileform::execute', array(&$this, 'authorSubmitSuppFileFormExecute'));
-			
+
 			// Add Dataverse deposit options to suppfile form for completed submissions
 			HookRegistry::register('Templates::Submission::SuppFile::AdditionalMetadata', array(&$this, 'suppFileAdditionalMetadata'));
 			HookRegistry::register('suppfileform::initdata', array(&$this, 'suppFileFormInitData'));
 			HookRegistry::register('suppfileform::readuservars', array(&$this, 'suppFileFormReadUserVars'));
 			HookRegistry::register('suppfileform::execute', array(&$this, 'suppFileFormExecute'));
-			
+
 			// Notify ArticleDAO of additional metadata fields in suppfile form
 			HookRegistry::register('articledao::getAdditionalFieldNames', array(&$this, 'articleMetadataFormFieldNames'));
-			
+
 			// Validate suppfile forms: warn if Dataverse deposit selected but no file uploaded
 			HookRegistry::register('authorsubmitsuppfileform::Constructor', array(&$this, 'suppFileFormConstructor'));
-			HookRegistry::register('suppfileform::Constructor', array(&$this, 'suppFileFormConstructor'));	
-			
+			HookRegistry::register('suppfileform::Constructor', array(&$this, 'suppFileFormConstructor'));
+
 			// Metadata form: update cataloguing information. Prevent update if study locked.
 			HookRegistry::register('metadataform::Constructor', array(&$this, 'metadataFormConstructor'));
 			HookRegistry::register('metadataform::execute', array(&$this, 'metadataFormExecute'));
-			
+
 			// Handle suppfile insertion: prevent duplicate insertion of a suppfile
 			HookRegistry::register('suppfiledao::_insertsuppfile', array(&$this, 'handleSuppFileInsertion'));
 			// Handle suppfile deletion: only necessary for completed submissions
 			HookRegistry::register('suppfiledao::_deletesuppfilebyid', array(&$this, 'handleSuppFileDeletion'));
-			// Add form validator to check whether submission includes data files 
+			// Add form validator to check whether submission includes data files
 			HookRegistry::register('authorsubmitstep4form::Constructor', array(&$this, 'addAuthorSubmitFormValidator'));
 			// Create study for author submissions
 			HookRegistry::register('Author::SubmitHandler::saveSubmit', array(&$this, 'handleAuthorSubmission'));
@@ -107,7 +107,7 @@ class DataversePlugin extends GenericPlugin {
 			HookRegistry::register('SectionEditorAction::recordDecision', array(&$this, 'handleEditorDecision'));
 			// Release studies on article publication
 			HookRegistry::register('articledao::_updatearticle', array(&$this, 'handleArticleUpdate'));
-			
+
 			// Get content for plugin notifications
 			HookRegistry::register('NotificationManager::getNotificationContents', array(&$this, 'getNotificationContents'));
 		}
@@ -142,14 +142,14 @@ class DataversePlugin extends GenericPlugin {
 	function getHandlerPath() {
 		return $this->getPluginPath() . '/pages/';
 	}
-	
+
 	/**
 	 * @see PKPPlugin::getTemplatePath()
 	 */
 	function getTemplatePath() {
 		return parent::getTemplatePath() . 'templates/';
-	}	 
-	
+	}
+
 	/**
 	 * @see GenericPlugin::getManagementVerbs()
 	 */
@@ -157,7 +157,7 @@ class DataversePlugin extends GenericPlugin {
 		$verbs = array();
 		if ($this->getEnabled()) {
 			$verbs[] = array('connect', __('plugins.generic.dataverse.settings.connect'));
-			$verbs[] = array('select', __('plugins.generic.dataverse.settings.selectDataverse')); 
+			$verbs[] = array('select', __('plugins.generic.dataverse.settings.selectDataverse'));
 			$verbs[] = array('settings', __('plugins.generic.dataverse.settings'));
 		}
 		return parent::getManagementVerbs($verbs);
@@ -172,7 +172,7 @@ class DataversePlugin extends GenericPlugin {
 		$templateMgr =& TemplateManager::getManager();
 		$templateMgr->register_function('plugin_url', array(&$this, 'smartyPluginUrl'));
 		$journal =& Request::getJournal();
-		
+
 		switch ($verb) {
 			case 'connect':
 				$this->import('classes.form.DataverseAuthForm');
@@ -225,7 +225,7 @@ class DataversePlugin extends GenericPlugin {
 					$form->display();
 				}
 				return true;
-        
+
 			default:
 				// Unknown management verb
 				assert(false);
@@ -252,7 +252,7 @@ class DataversePlugin extends GenericPlugin {
 		}
 		return $smarty->smartyUrl($params, $smarty);
 	}
-	
+
 	/**
 	 * Hook callback: register pages to display terms of use & data policy
 	 * @see PKPPageRouter::route()
@@ -277,8 +277,8 @@ class DataversePlugin extends GenericPlugin {
 				}
 			}
 		}
-	}	 
-	
+	}
+
 	/**
 	 * Hook callback: register output filter to add data citation to submission
 	 * summaries; add data citation to reading tools' suppfiles and metadata views.
@@ -292,7 +292,7 @@ class DataversePlugin extends GenericPlugin {
 			case $this->getTemplatePath() .'/termsOfUse.tpl':
 				$templateMgr->register_outputfilter(array(&$this, 'termsOfUseOutputFilter'));
 				break;
-			case 'author/submission.tpl':			 
+			case 'author/submission.tpl':
 			case 'sectionEditor/submission.tpl':
 				$templateMgr->register_outputfilter(array(&$this, 'submissionOutputFilter'));
 				break;
@@ -308,9 +308,9 @@ class DataversePlugin extends GenericPlugin {
 		}
 		return false;
 	}
-	
+
 	/**
-	 * Output filter alters title in Reading Tools' header template, re-used to 
+	 * Output filter alters title in Reading Tools' header template, re-used to
 	 * display Dataverse Terms of Use
 	 * @param $output string
 	 * @param $templateMgr TemplateManager
@@ -330,7 +330,7 @@ class DataversePlugin extends GenericPlugin {
 		$templateMgr->unregister_outputfilter('termsOfUseOutputFilter');
 		return $output;
 	}
-	
+
 	/**
 	 * Output filter adds Dataverse or external data citation and removes
 	 * local download links for suppfiles deposited in Dataverse.
@@ -340,15 +340,15 @@ class DataversePlugin extends GenericPlugin {
 	 */
 	function rtMetadataOutputFilter($output, &$templateMgr) {
 		$article =& $templateMgr->get_template_vars('article');
-		$currentJournal =& $templateMgr->get_template_vars('currentJournal');		
-		$dataverseStudyDao =& DAORegistry::getDAO('DataverseStudyDAO');		
+		$currentJournal =& $templateMgr->get_template_vars('currentJournal');
+		$dataverseStudyDao =& DAORegistry::getDAO('DataverseStudyDAO');
 		$study =& $dataverseStudyDao->getStudyBySubmissionId($article->getId());
-		
+
 		// Add data citation, if study exists or if external data citation given
-		$dataCitation = isset($study) ? 
+		$dataCitation = isset($study) ?
 						$this->_formatDataCitation($study->getDataCitation(), $study->getPersistentUri()) :
 						$article->getLocalizedData('externalDataCitation');
-		
+
 		if ($dataCitation) {
 			$suppFileLabel = '<td>'. __('rt.metadata.pkp.suppFiles') .'</td>';
 			$suppFileLabelIndex = strpos($output, $suppFileLabel);
@@ -364,17 +364,17 @@ class DataversePlugin extends GenericPlugin {
 				$output = $newOutput;
 			}
 		}
-			
+
 		// Don't display public links to supp files that have been deposited in Dataverse
-		$suppFiles = $article->getSuppFiles();		
+		$suppFiles = $article->getSuppFiles();
 		if (isset($study) && !empty($suppFiles)) {
 			$suppFileOutput = '';
 			$dvFileDao =& DAORegistry::getDAO('DataverseFileDAO');
 
 			foreach ($article->getSuppFiles() as $suppFile) {
 				$dvFile =& $dvFileDao->getDataverseFileBySuppFileId($suppFile->getId(), $article->getId());
-				if (isset($dvFile)) { 
-					// File is in Dataverse. 
+				if (isset($dvFile)) {
+					// File is in Dataverse.
 					$suppFileOutput .= $templateMgr->smartyEscape($suppFile->getSuppFileTitle()) . ' ';
 					$suppFileOutput .= '<a href="'. $study->getPersistentUri() .'" target="_new" class="action">';
 					$suppFileOutput .= __('plugins.generic.dataverse.suppFiles.view');
@@ -413,7 +413,7 @@ class DataversePlugin extends GenericPlugin {
 		$templateMgr->unregister_outputfilter('rtMetadataOutputFilter');
 		return $output;
 	}
-	
+
 	/**
 	 * Output filter. If suppfile is in Dataverse, filter replaces link to view
 	 * or download suppfiles from OJS with link to dataset in Dataverse.
@@ -423,15 +423,15 @@ class DataversePlugin extends GenericPlugin {
 	 */
 	function rtSuppFilesOutputFilter($output, &$templateMgr) {
 		$article =& $templateMgr->get_template_vars('article');
-		$currentJournal =& $templateMgr->get_template_vars('currentJournal');		
-		$dvStudyDao =& DAORegistry::getDAO('DataverseStudyDAO');				
+		$currentJournal =& $templateMgr->get_template_vars('currentJournal');
+		$dvStudyDao =& DAORegistry::getDAO('DataverseStudyDAO');
 		$study =& $dvStudyDao->getStudyBySubmissionId($article->getId());
 		if (isset($study)) {
 			$dvFileDao =& DAORegistry::getDAO('DataverseFileDAO');
 			foreach ($article->getSuppFiles() as $suppFile) {
 				$dvFile = $dvFileDao->getDataverseFileBySuppFileId($suppFile->getId(), $article->getId());
 				if (isset($dvFile)) {
-					// Find and replace local download link w/ dataset URI 
+					// Find and replace local download link w/ dataset URI
 					$params = array(
 							'page' => 'article',
 							'op'   => 'downloadSuppFile',
@@ -487,7 +487,7 @@ class DataversePlugin extends GenericPlugin {
 	function submissionOutputFilter($output, &$templateMgr) {
 		$submission =& $templateMgr->get_template_vars('submission');
 		if (!isset($submission)) return $output;
-			
+
 		$dataverseStudyDao =& DAORegistry::getDAO('DataverseStudyDAO');
 		$study =& $dataverseStudyDao->getStudyBySubmissionId($submission->getId());
 
@@ -512,7 +512,7 @@ class DataversePlugin extends GenericPlugin {
 		$templateMgr->unregister_outputfilter('submissionSummaryOutputFilter');
 		return $output;
 	}
-	
+
 	/**
 	 * Hook callback: add data citation to article landing page.
 	 * @see templates/article/article.tpl
@@ -522,7 +522,7 @@ class DataversePlugin extends GenericPlugin {
 		$output =& $args[2];
 
 		$article =& $templateMgr->get_template_vars('article');
-		
+
 		$dataverseStudyDao =& DAORegistry::getDAO('DataverseStudyDAO');
 		$study =& $dataverseStudyDao->getStudyBySubmissionId($article->getId());
 		if (isset($study)) {
@@ -534,8 +534,8 @@ class DataversePlugin extends GenericPlugin {
 		}
 		$output .= $templateMgr->fetch($this->getTemplatePath() . 'dataCitationArticle.tpl');
 		return false;
-	}	 
-	
+	}
+
 	/**
 	 * Hook callback: register plugin settings fields with TinyMCE
 	 * @see TinyMCEPlugin::getEnableFields()
@@ -575,7 +575,7 @@ class DataversePlugin extends GenericPlugin {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Hook callback: add validators to fields added to metadata form
 	 * @see Form::Form()
@@ -584,8 +584,8 @@ class DataversePlugin extends GenericPlugin {
 		$form =& $args[0];
 		$form->addCheck(new FormValidatorCustom($this, 'metadata', FORM_VALIDATOR_REQUIRED_VALUE, 'plugins.generic.dataverse.metadataForm.studyLocked', array(&$this, 'formValidateStudyState'), array(&$form)));
 		return false;
-	}	 
-	
+	}
+
 	/**
 	 * Hook callback: update cataloguing information on form submission, if article
 	 * has a Dataverse study
@@ -604,8 +604,8 @@ class DataversePlugin extends GenericPlugin {
 			$notificationManager->createTrivialNotification($user->getId(), $metadataReplaced ? NOTIFICATION_TYPE_DATAVERSE_STUDY_UPDATED : NOTIFICATION_TYPE_ERROR);
 		}
 		return false;
-	}	 
-	
+	}
+
 	/**
 	 * Form validator added to metadata and suppfile forms: prevents form submission
 	 * if article has files in Dataverse that are locked for processing
@@ -614,9 +614,9 @@ class DataversePlugin extends GenericPlugin {
 	 * @return boolean true if study is NOT locked
 	 */
 	function formValidateStudyState($field, $form) {
-		$articleId = isset($form->article) ? $form->article->getId() : $form->articleId;		
+		$articleId = isset($form->article) ? $form->article->getId() : $form->articleId;
 		$dvStudyDao = DAORegistry::getDAO('DataverseStudyDAO');
-		$study = $dvStudyDao->getStudyBySubmissionId($articleId);		 
+		$study = $dvStudyDao->getStudyBySubmissionId($articleId);
 
 		// No study for this submission
 		if (!isset($study)) return true;
@@ -624,7 +624,7 @@ class DataversePlugin extends GenericPlugin {
 		// Prevent submission if study is locked
 		return $this->studyIsLocked($study) ? false : true;
 	}
-	
+
 	/**
 	 * Hook callback: notify ArticleDAO of fields added to suppfile forms.
 	 * @see ArticleDAO::getAdditionalFieldNames()
@@ -633,9 +633,9 @@ class DataversePlugin extends GenericPlugin {
 		$fields =& $args[1];
 		$fields[] = 'studyDescription';
 		$fields[] = 'externalDataCitation';
-		return false;		 
+		return false;
 	}
-	
+
 	/**
 	 * Hook callback: add data publication options to suppfile form templates for
 	 * initial & completed submissions.
@@ -645,7 +645,7 @@ class DataversePlugin extends GenericPlugin {
 	function suppFileAdditionalMetadata($hookName, $args) {
 		$templateMgr =& $args[1];
 		$output =& $args[2];
-		$articleId = $templateMgr->get_template_vars('articleId');				 
+		$articleId = $templateMgr->get_template_vars('articleId');
 
 		// Include Dataverse data citation, if a study exists for this submission.
 		$dvStudyDao = DAORegistry::getDAO('DataverseStudyDAO');
@@ -658,7 +658,7 @@ class DataversePlugin extends GenericPlugin {
 		$output .= $templateMgr->fetch($this->getTemplatePath() . 'suppFileAdditionalMetadata.tpl');
 		return false;
 	}
-	
+
 	/**
 	 * Hook callback: add validators to fields added to suppfile form
 	 * @see Form::Form
@@ -667,10 +667,10 @@ class DataversePlugin extends GenericPlugin {
 		$form =& $args[0];
 		$form->addCheck(new FormValidatorCustom($this, 'publishData', FORM_VALIDATOR_REQUIRED_VALUE, 'plugins.generic.dataverse.suppFile.publishData.error', array(&$this, 'suppFileFormValidateDeposit'), array(&$form)));
 		$form->addCheck(new FormValidatorCustom($this, 'publishData', FORM_VALIDATOR_REQUIRED_VALUE, 'plugins.generic.dataverse.suppFile.studyLocked', array(&$this, 'formValidateStudyState'), array(&$form)));
-		$form->addCheck(new FormValidatorCustom($this, 'externalDataCitation', FORM_VALIDATOR_REQUIRED_VALUE, 'plugins.generic.dataverse.suppFile.externalDataCitation.error', array(&$this, 'suppFileFormValidateCitations'), array(&$form))); 
+		$form->addCheck(new FormValidatorCustom($this, 'externalDataCitation', FORM_VALIDATOR_REQUIRED_VALUE, 'plugins.generic.dataverse.suppFile.externalDataCitation.error', array(&$this, 'suppFileFormValidateCitations'), array(&$form)));
 		return false;
 	}
-	
+
 	/**
 	 * Suppfile form validator: return false if Dataverse deposit selected but no
 	 * suppfile has been uploaded.
@@ -682,7 +682,7 @@ class DataversePlugin extends GenericPlugin {
 		if ($publishData == 'dataverse') {
 			// If suppfile exists & has a non-zero file ID, a file has been uploaded previously
 			if ($form->suppFile && $form->suppFile->getFileId()) return true;
-			
+
 			// If no file has been uploaded, return false
 			import('classes.file.ArticleFileManager');
 			$articleId = isset($form->article) ? $form->article->getId() : $form->articleId;
@@ -691,9 +691,9 @@ class DataversePlugin extends GenericPlugin {
 		}
 		return true;
 	}
-	
+
 	/**
-	 * Suppfile form validator: return false if Dataverse deposit selected and an 
+	 * Suppfile form validator: return false if Dataverse deposit selected and an
 	 * external citation has been provided. Submitters must provide one or the
 	 * other, not both.
 	 * @param $externalCitation string field value
@@ -706,7 +706,7 @@ class DataversePlugin extends GenericPlugin {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Hook callback: initialize fields added to suppfile form
 	 * @see Form::initData()
@@ -714,16 +714,16 @@ class DataversePlugin extends GenericPlugin {
 	function suppFileFormInitData($hookName, $args) {
 		$form =& $args[0];
 
-		$journal =& Request::getJournal();		
+		$journal =& Request::getJournal();
 		$articleDao =& DAORegistry::getDAO('ArticleDAO');
-		$article =& $form->article;		 
+		$article =& $form->article;
 		if (!isset($article)) {
 			$article = $articleDao->getArticle($form->articleId, $journal->getId());
 		}
 		// Dataset metadata
 		$form->setData('studyDescription', $article->getLocalizedData('studyDescription'));
 		$form->setData('externalDataCitation', $article->getLocalizedData('externalDataCitation'));
-		
+
 		// Set data publishing option for this suppfile:
 		// 'none'			 -- supplementary file, not published (default)
 		// 'dataverse' -- deposit file in Dataverse and publish data citation with article
@@ -762,20 +762,20 @@ class DataversePlugin extends GenericPlugin {
 		// External data citation: field is article metadata, but provided in
 		// suppfile form as well, at point of data file deposit, to help support
 		// data publishing decisions.
-		$journal =& Request::getJournal();		
+		$journal =& Request::getJournal();
 		$articleDao =& DAORegistry::getDAO('ArticleDAO');
 		$article = $articleDao->getArticle($form->articleId, $journal->getId());
 		$article->setData('studyDescription', $form->getData('studyDescription'), $form->getFormLocale());
 		$article->setData('externalDataCitation', $form->getData('externalDataCitation'), $form->getFormLocale());
 		$articleDao->updateArticle($article);
-		
+
 		if (!isset($form->suppFile) || !$form->suppFile->getId()) {
-			// Suppfile metadata may exist but no file has been uploaded. 
+			// Suppfile metadata may exist but no file has been uploaded.
 			return false;
 		}
-		
+
 		$dvFileDao =& DAORegistry::getDAO('DataverseFileDAO');
-		$dvFile = $dvFileDao->getDataverseFileBySuppFileId($form->suppFile->getId(), $form->articleId);			 
+		$dvFile = $dvFileDao->getDataverseFileBySuppFileId($form->suppFile->getId(), $form->articleId);
 
 		switch ($form->getData('publishData')) {
 			case 'none':
@@ -793,22 +793,22 @@ class DataversePlugin extends GenericPlugin {
 					$dvFile = new DataverseFile();
 					$dvFile->setSuppFileId($form->suppFile->getId());
 					$dvFile->setSubmissionId($form->articleId);
-					$dvFileDao->insertDataverseFile($dvFile);						 
+					$dvFileDao->insertDataverseFile($dvFile);
 				}
 				break;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Hook callback: handle suppfile form execution for completed submissions
 	 * @see Form::execute()
 	 */
-	function suppFileFormExecute($hookName, $args) {	 
+	function suppFileFormExecute($hookName, $args) {
 		$form =& $args[0];
 		$articleDao =& DAORegistry::getDAO('ArticleDAO');
 		$article =& $form->article;
-		
+
 		// Notify on successful study updates or errors
 		import('classes.notification.NotificationManager');
 		$notificationManager = new NotificationManager();
@@ -819,26 +819,26 @@ class DataversePlugin extends GenericPlugin {
 		$article->setData('studyDescription', $form->getData('studyDescription'), $form->getFormLocale());
 		$article->setData('externalDataCitation', $form->getData('externalDataCitation'), $form->getFormLocale());
 		$articleDao->updateArticle($article);
-		
-		// Form executed for completed submissions. Draft studies are created on 
+
+		// Form executed for completed submissions. Draft studies are created on
 		// submission completion. A study may or may not exist for this submission.
 		switch ($form->getData('publishData')) {
 			case 'none':
-				// Supplementary file: do not deposit. 
-				if ($form->suppFile->getId()) { 
-					// Suppfile exists & may previously have been flagged for deposit / 
+				// Supplementary file: do not deposit.
+				if ($form->suppFile->getId()) {
+					// Suppfile exists & may previously have been flagged for deposit /
 					// deposited in Dataverse
-					$dvFileDao =& DAORegistry::getDAO('DataverseFileDAO');		
+					$dvFileDao =& DAORegistry::getDAO('DataverseFileDAO');
 					$dvFile =& $dvFileDao->getDataverseFileBySuppFileId($form->suppFile->getId(), $article->getId());
 					if (isset($dvFile)) {
-						// Remove file from pending deposit (if submission is incomplete) or 
-						// dataset previously deposited 
+						// Remove file from pending deposit (if submission is incomplete) or
+						// dataset previously deposited
 						$fileDeleted = $this->deleteFile($dvFile);
 						if ($fileDeleted) {
 							$dvFileDao->deleteDataverseFile($dvFile);
 						}
 						// Deleting a file may affect study cataloguing information
-						$dvStudyDao =& DAORegistry::getDAO('DataverseStudyDAO');				
+						$dvStudyDao =& DAORegistry::getDAO('DataverseStudyDAO');
 						$study =& $dvStudyDao->getStudyBySubmissionId($article->getId());
 						if (isset($study)) {
 							$this->replaceStudyMetadata($article, $study);
@@ -852,10 +852,10 @@ class DataversePlugin extends GenericPlugin {
 			case 'dataverse':
 				// Deposit file. Create a study, if submission doesn't have one already.
 				$dvStudyDao =& DAORegistry::getDAO('DataverseStudyDAO');
-				$study =& $dvStudyDao->getStudyBySubmissionId($article->getId());	 
+				$study =& $dvStudyDao->getStudyBySubmissionId($article->getId());
 				if (!$study) $study = $this->createStudy($article);
 				if (!$study) {
-					// If study is not created, warn & exit	
+					// If study is not created, warn & exit
 					$notificationManager->createTrivialNotification($user->getId(), NOTIFICATION_TYPE_ERROR);
 					return false;
 				}
@@ -867,7 +867,7 @@ class DataversePlugin extends GenericPlugin {
 					$suppFileDao->insertSuppFile($form->suppFile);
 					$form->suppFileId = $form->suppFile->getId();
 					$form->suppFile =& $suppFileDao->getSuppFile($form->suppFileId, $article->getId());
-					// Add suppfile to study. 
+					// Add suppfile to study.
 					$deposited = $this->depositFiles($study, array($form->suppFile));
 					// File-level metadata may need to be added to study.
 					$this->replaceStudyMetadata($article, $study);
@@ -877,8 +877,8 @@ class DataversePlugin extends GenericPlugin {
 				else {
 					// Suppfile exists, and uploaded file may be new or a replacement
 					// (form validator requires file upload if Dataverse option selected).
-					// Hook is called before suppfile object is updated with details of 
-					// uploaded file, so refresh suppfile object here. 
+					// Hook is called before suppfile object is updated with details of
+					// uploaded file, so refresh suppfile object here.
 					import('classes.file.ArticleFileManager');
 					$fileName = 'uploadSuppFile';
 					$articleFileManager = new ArticleFileManager($article->getId());
@@ -888,8 +888,8 @@ class DataversePlugin extends GenericPlugin {
 							$articleFileManager->uploadSuppFile($fileName, $fileId);
 						}
 						else {
-							$fileId = $articleFileManager->uploadSuppFile($fileName);	 
-							$form->suppFile->setFileId($fileId);					
+							$fileId = $articleFileManager->uploadSuppFile($fileName);
+							$form->suppFile->setFileId($fileId);
 						}
 					}
 					// Store form metadata. It may be used to update study cataloguing information.
@@ -897,12 +897,12 @@ class DataversePlugin extends GenericPlugin {
 					$form->suppFile =& $suppFileDao->getSuppFile($form->suppFileId, $article->getId());
 					$form->setSuppFileData($form->suppFile);
 					$suppFileDao->updateSuppFile($form->suppFile);
-					
+
 					// The uploaded file may be new, or it may replace a previously-deposited
 					// file. If it's a replacement, delete the existing file from Dataverse:
 					// this prevents orphaned files on the Dataverse side, and filename collisions
 					// described in https://redmine.hmdc.harvard.edu/issues/3301
-					$dvFileDao =& DAORegistry::getDAO('DataverseFileDAO');							
+					$dvFileDao =& DAORegistry::getDAO('DataverseFileDAO');
 					$dvFile =& $dvFileDao->getDataverseFileBySuppFileId($form->suppFileId, $article->getId());
 					if (isset($dvFile)) {
 						$this->deleteFile($dvFile);
@@ -916,7 +916,7 @@ class DataversePlugin extends GenericPlugin {
  					$notificationManager->createTrivialNotification($user->getId(), $deposited ? NOTIFICATION_TYPE_DATAVERSE_STUDY_UPDATED: NOTIFICATION_TYPE_ERROR);
  				}
 				break;
-				
+
 			default:
 				// Unknown option
 				assert(false);
@@ -932,13 +932,13 @@ class DataversePlugin extends GenericPlugin {
 	 */
 	function handleSuppFileInsertion($hookName, $args) {
 		$params =& $args[1];
-		$fileId = $params[1];		 
+		$fileId = $params[1];
 		$articleId = $params[2];
-		
+
 		$suppFileDao =& DAORegistry::getDAO('SuppFileDAO');
 		return $suppFileDao->suppFileExistsByFileId($articleId, $fileId);
 	}
-	
+
 	/**
 	 * Hook callback: when suppfile deleted, remove data file from Dataverse
 	 * study, if present
@@ -948,7 +948,7 @@ class DataversePlugin extends GenericPlugin {
 		$params =& $args[1];
 		$suppFileId = is_array($params) ? $params[0] : $params;
 		$submissionId = is_array($params) ? $params[1] : '';
-		
+
 		// Suppfile deposited in / marked for deposit in Dataverse?
 		$dvFileDao =& DAORegistry::getDAO('DataverseFileDAO');
 		$dvFile =& $dvFileDao->getDataverseFileBySuppFileId($suppFileId, $submissionId ? $submissionId : '');
@@ -976,7 +976,7 @@ class DataversePlugin extends GenericPlugin {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Hook callback: add form validator to verify submissions include data files
 	 * @see Form::Form()
@@ -985,7 +985,7 @@ class DataversePlugin extends GenericPlugin {
 		$form =& $args[0];
 		$form->addCheck(new FormValidatorCustom($form, '', FORM_VALIDATOR_REQUIRED_VALUE, 'plugins.generic.dataverse.settings.requireDataError', array(&$this, 'validateRequiredData'), array($form)));
 	}
-	
+
 	/**
 	 * Form validator: verify data files have been provided, if required in plugin
 	 * settings.
@@ -1001,7 +1001,7 @@ class DataversePlugin extends GenericPlugin {
 		$dvFiles =& $dvFileDao->getDataverseFilesBySubmissionId($form->articleId);
 		return count($dvFiles);
 	}
-	
+
 	/**
 	 * Hook callback: create draft study if author has uploaded data files
 	 * @see SubmitHandler::saveSubmit()
@@ -1010,17 +1010,17 @@ class DataversePlugin extends GenericPlugin {
 		$step =& $args[0];
 		$article =& $args[1];
 		if ($step == 5) {
-			// Author has completed submission. If suppfiles selected for deposit in 
+			// Author has completed submission. If suppfiles selected for deposit in
 			// Dataverse, create a new study.
 			$dvFileDao =& DAORegistry::getDAO('DataverseFileDAO');
 			$dvFiles =& $dvFileDao->getDataverseFilesBySubmissionId($article->getId());
-			if ($dvFiles) {	
+			if ($dvFiles) {
 				$study = $this->createStudy($article);
 				if ($study) {
-					// DataverseFiles act as placeholders until suppfiles deposited. 
+					// DataverseFiles act as placeholders until suppfiles deposited.
 					// Deposit suppfiles, then update DataverseFiles with new study / dataset ID
-					$suppFileDao =& DAORegistry::getDAO('SuppFileDAO');						
-					$suppFiles = array();					
+					$suppFileDao =& DAORegistry::getDAO('SuppFileDAO');
+					$suppFiles = array();
 					foreach ($dvFiles as $dvFile) {
 						$suppFiles[] = $suppFileDao->getSuppFile($dvFile->getSuppFileId(), $article->getId());
 					}
@@ -1028,23 +1028,23 @@ class DataversePlugin extends GenericPlugin {
 				}
 				// notify:
 				import('classes.notification.NotificationManager');
-				$notificationManager = new NotificationManager();				
+				$notificationManager = new NotificationManager();
 				$user =& Request::getUser();
 				$notificationManager->createTrivialNotification($user->getId(), isset($study) ? NOTIFICATION_TYPE_DATAVERSE_STUDY_CREATED : NOTIFICATION_TYPE_ERROR);
 			}
 		}
 		return false;
 	}
-	
+
 	/**
-	 * Hook callback: release or delete study based on editor decision 
+	 * Hook callback: release or delete study based on editor decision
 	 * @see SectionEditorAction::recordDecision()
 	 */
 	function handleEditorDecision($hookName, $args) {
 		$submission =& $args[0];
 		$decision =& $args[1];
-		 
-		// Plugin may be configured to release on publication: defer decision 
+
+		// Plugin may be configured to release on publication: defer decision
 		if ($this->getSetting($submission->getJournalId(), 'studyRelease') == DATAVERSE_PLUGIN_RELEASE_ARTICLE_PUBLISHED) {
 			return false;
 		}
@@ -1052,7 +1052,7 @@ class DataversePlugin extends GenericPlugin {
 		// Find study associated with submission
 		$dataverseStudyDao =& DAORegistry::getDAO('DataverseStudyDAO');
 		$study =& $dataverseStudyDao->getStudyBySubmissionId($submission->getId());
-		
+
 		if (isset($study)) {
 			// Editor decision on a submission with a draft study in Dataverse
 			if ($decision['decision'] == SUBMISSION_EDITOR_DECISION_ACCEPT) {
@@ -1065,7 +1065,7 @@ class DataversePlugin extends GenericPlugin {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Hook callback: release study on article publication
 	 * @see DAO::update()
@@ -1074,7 +1074,7 @@ class DataversePlugin extends GenericPlugin {
 		$params =& $args[1];
 		$articleId = $params[count($params)-1];
 		$status = $params[6];
-		
+
 		// If plugin is configured to release studies when accepted for publication,
 		// editorial actions during review may have created draft versions of study.
 		// Release all studies on article publication, regardless of plugin settings,
@@ -1084,8 +1084,8 @@ class DataversePlugin extends GenericPlugin {
 			$study =& $dvStudyDao->getStudyBySubmissionId($articleId);
 			if (isset($study)) {
 				// Data has been deposited for this article. If article is being published,
-				// update study metadata to add article citation, then release the dataset. 
-				$publishedArticleDao =& DAORegistry::getDAO('PublishedArticleDAO');			
+				// update study metadata to add article citation, then release the dataset.
+				$publishedArticleDao =& DAORegistry::getDAO('PublishedArticleDAO');
 				$article =& $publishedArticleDao->getPublishedArticleByArticleId($articleId);
 				if ($article && $article->getStatus() != STATUS_PUBLISHED) {
 					$article->setStatus(STATUS_PUBLISHED);
@@ -1096,21 +1096,21 @@ class DataversePlugin extends GenericPlugin {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Hook callback: delete study if editor rejects submission
 	 * @see SectionEditorAction::unsuitableSubmission()
 	 */
 	function handleUnsuitableSubmission($hookName, $args) {
-		$submission =& $args[0];		
+		$submission =& $args[0];
 		$dataverseStudyDao =& DAORegistry::getDAO('DataverseStudyDAO');
 		$study =& $dataverseStudyDao->getStudyBySubmissionId($submission->getId());
 		if (isset($study)) {
 			$this->deleteStudy($study);
 		}
-		return false;		 
+		return false;
 	}
-	
+
 	/**
 	 * Request Dataverse Network service document
 	 * @param $journalId int Journal ID
@@ -1119,34 +1119,34 @@ class DataversePlugin extends GenericPlugin {
 	function getServiceDocument($journalId) {
 		// allow insecure SSL connections
 		$client = $this->_initSwordClient();
-		
+
 		// Build service doc request. If version not set, assume v1.
-		$apiVersion = $this->getSetting($journalId, 'apiVersion') ? 
+		$apiVersion = $this->getSetting($journalId, 'apiVersion') ?
 						$this->getSetting($journalId, 'apiVersion') : '1';
-		
+
 		$sdRequest = $this->getSetting($journalId, 'dvnUri');
 		$sdRequest .= preg_match('/\/dvn$/', $sdRequest) ? '' : '/dvn';
 		$sdRequest .= '/api/data-deposit/v'. $apiVersion . '/swordv2/service-document';
-		
+
 		$sd = $client->servicedocument(
-						$sdRequest, 
-						$this->getSetting($journalId, 'username'), 
+						$sdRequest,
+						$this->getSetting($journalId, 'username'),
 						$this->getSetting($journalId, 'password'),
 						'');
-		
+
 		if ($sd && $sd->sac_status == DATAVERSE_PLUGIN_HTTP_STATUS_OK && !$this->getSetting($journalId, 'apiVersion')) {
 			// Check service doc for deprecation warnings & update API.
 			$newVersion = $this->checkAPIVersion($sd);
 			if ($newVersion) $apiVersion = $newVersion;
-			$this->updateSetting($journalId, 'apiVersion', $apiVersion);			
+			$this->updateSetting($journalId, 'apiVersion', $apiVersion);
 		}
-		
+
 		return $sd;
-	} 
-	
+	}
+
 	/**
 	 * Get terms of use of Dataverse configured for the journal
-	 * @return string 
+	 * @return string
 	 */
 	function getTermsOfUse() {
 		$journal =& Request::getJournal();
@@ -1154,7 +1154,7 @@ class DataversePlugin extends GenericPlugin {
 		$dvTermsOfUse = '';
 		if ($sd->sac_status == DATAVERSE_PLUGIN_HTTP_STATUS_OK) {
 			$dvUri = $this->getSetting($journal->getId(), 'dvUri');
-				
+
 			// Find workspaces defined in service document
 			foreach ($sd->sac_workspaces as $workspace) {
 				foreach ($workspace->sac_collections as $collection) {
@@ -1162,11 +1162,11 @@ class DataversePlugin extends GenericPlugin {
 						// TOU constructed from policies at dataverse, collection, study
 						//	levels and separated by hyphens. Kludge in some line breaks.
 						$dvTermsOfUse = str_replace(
-										DATAVERSE_PLUGIN_TOU_POLICY_SEPARATOR, 
-										'<br/>'. DATAVERSE_PLUGIN_TOU_POLICY_SEPARATOR .'<br/>', 
+										DATAVERSE_PLUGIN_TOU_POLICY_SEPARATOR,
+										'<br/>'. DATAVERSE_PLUGIN_TOU_POLICY_SEPARATOR .'<br/>',
 										$collection->sac_collpolicy
 										);
-						// Store DV terms of use as a fallback 
+						// Store DV terms of use as a fallback
 						$this->updateSetting($journal->getId(), 'dvTermsOfUse', $dvTermsOfUse, 'string');
 						break;
 					}
@@ -1185,19 +1185,19 @@ class DataversePlugin extends GenericPlugin {
 		$journalDao =& DAORegistry::getDAO('JournalDAO');
 		$journal =& $journalDao->getById($article->getJournalId());
 		$package = new DataversePackager();
-					
+
 		// Add article metadata, in language of article locale
 		$package->addMetadata('title', $article->getTitle($article->getLocale()));
 		// If study description not provided, use article abstract
-		$package->addMetadata('description', 
-						$article->getData('studyDescription', $article->getLocale()) ? 
-						$article->getData('studyDescription', $article->getLocale()) :						
+		$package->addMetadata('description',
+						$article->getData('studyDescription', $article->getLocale()) ?
+						$article->getData('studyDescription', $article->getLocale()) :
 						String::html2text($article->getAbstract($article->getLocale()))
 		);
 		foreach ($article->getAuthors() as $author) {
 			$package->addMetadata('creator', $author->getFullName(true), array('affiliation' => $this->_formatAffiliation($author, $article->getLocale())));
 		}
-		
+
 		// Article metadata: fields with multiple values
 		$pattern = '/\s*'. DATAVERSE_PLUGIN_SUBJECT_SEPARATOR .'\s*/';
 		foreach(String::regexp_split($pattern, $article->getCoverageGeo($article->getLocale())) as $coverage) {
@@ -1215,7 +1215,7 @@ class DataversePlugin extends GenericPlugin {
 			if ($subject) $subjects[String::strtolower($subject)] = $subject;
 		}
 
-		// Article metadata: filter contributors(s) to prevent repeated values in dataset contributor field		
+		// Article metadata: filter contributors(s) to prevent repeated values in dataset contributor field
 		$contributors = array();
 		foreach(String::regexp_split($pattern, $article->getSponsor($article->getLocale())) as $contributor) {
 			if ($contributor) $contributors[String::strtolower($contributor)] = $contributor;
@@ -1231,7 +1231,7 @@ class DataversePlugin extends GenericPlugin {
 				// If article has no pub date, use issue pub date
 				$issueDao =& DAORegistry::getDAO('IssueDAO');
 				$issue =& $issueDao->getIssueByArticleId($article->getId(), $article->getJournalId());
-				$datePublished = $issue->getDatePublished();        
+				$datePublished = $issue->getDatePublished();
 			}
 			$package->addMetadata('date', strftime('%Y-%m-%d', strtotime($datePublished)));
 			// isReferencedBy: add persistent URL to citation using specified pubid plugin
@@ -1245,7 +1245,7 @@ class DataversePlugin extends GenericPlugin {
 			if(!array_key_exists('holdingsURI', $pubIdAttributes)) {
 				$pubIdAttributes['holdingsURI'] = Request::url($journal->getPath(), 'article', 'view', array($article->getId()));
 			}
-			// Add copyright notice. 
+			// Add copyright notice.
 			if ($article->getCopyrightYear() && $article->getCopyrightHolder($article->getLocale())) {
 				AppLocale::requireComponents(LOCALE_COMPONENT_APPLICATION_COMMON);
 				$package->addMetadata('rights',	__('submission.copyrightStatement', array('copyrightYear' => $article->getCopyrightYear(), 'copyrightHolder' => $article->getCopyrightHolder($article->getLocale()))));
@@ -1257,7 +1257,7 @@ class DataversePlugin extends GenericPlugin {
 		$package->addMetadata('isReferencedBy', String::html2text($this->getCitation($article)), $pubIdAttributes);
 
 		// Suppfile metadata
-		$suppFileDao =& DAORegistry::getDAO('SuppFileDAO');				
+		$suppFileDao =& DAORegistry::getDAO('SuppFileDAO');
 		$dvFileDao =& DAORegistry::getDAO('DataverseFileDAO');
 		$dvFiles =& $dvFileDao->getDataverseFilesBySubmissionId($article->getId());
 		// Filter type field to prevent repeated values in dataset 'Kind of data' field
@@ -1277,21 +1277,21 @@ class DataversePlugin extends GenericPlugin {
 				if ($suppFile->getTypeOther($article->getLocale())) $suppFileTypes[String::strtolower($suppFile->getTypeOther($article->getLocale()))] = $suppFile->getTypeOther($article->getLocale());
 			}
 		}
-		
+
 		// Add subjects, contributors & types to entry
 		foreach (array_values($subjects) as $subject) { $package->addMetadata('subject', $subject); }
 		foreach (array_values($contributors) as $contributor) { $package->addMetadata('contributor', $contributor, array('type' => 'funder')); }
 		foreach (array_values($suppFileTypes) as $type) { $package->addMetadata('type', $type); }
-		
+
 		// Write metadata as Atom entry
 		$package->createAtomEntry();
 
 		// Return package for deposit
 		return $package;
 	}
-	
+
 	/**
-	 * Create a Dataverse study: create deposit package with journal-, article-, 
+	 * Create a Dataverse study: create deposit package with journal-, article-,
 	 * and suppfile-level metadata, then deposit in Dataverse to create study.
 	 * @param $article Article
 	 * @return DataverseStudy
@@ -1300,8 +1300,8 @@ class DataversePlugin extends GenericPlugin {
 		$package = $this->createMetadataPackage($article);
 		$client = $this->_initSwordClient();
 		$depositReceipt = $client->depositAtomEntry(
-						$this->getSetting($article->getJournalId(), 'dvUri'), 
-						$this->getSetting($article->getJournalId(), 'username'), 
+						$this->getSetting($article->getJournalId(), 'dvUri'),
+						$this->getSetting($article->getJournalId(), 'username'),
 						$this->getSetting($article->getJournalId(), 'password'),
 						'',	 // on behalf of: no one
 						$package->getAtomEntryFilePath());
@@ -1315,8 +1315,8 @@ class DataversePlugin extends GenericPlugin {
 			$study->setEditMediaUri($depositReceipt->sac_edit_media_iri);
 			$study->setStatementUri($depositReceipt->sac_state_iri_atom);
 			$study->setDataCitation($depositReceipt->sac_dcterms['bibliographicCitation'][0]);
-				
-			// Persistent URI may be present, as an altenate 
+
+			// Persistent URI may be present, as an altenate
 			foreach ($depositReceipt->sac_links as $link) {
 				if ($link->sac_linkrel == 'alternate') {
 					$study->setPersistentUri($link->sac_linkhref);
@@ -1324,12 +1324,12 @@ class DataversePlugin extends GenericPlugin {
 				}
 			}
 			// Insert new Dataverse study for this submission
-			$dataverseStudyDao =& DAORegistry::getDAO('DataverseStudyDAO');			 
+			$dataverseStudyDao =& DAORegistry::getDAO('DataverseStudyDAO');
 			$dataverseStudyDao->insertStudy($study);
 		}
 		return $study;
 	}
-	
+
 	/**
 	 * Update cataloguing information for an existing study. Metadata in the Atom
 	 * entry replaces all cataloguing information currently defined for the
@@ -1343,8 +1343,8 @@ class DataversePlugin extends GenericPlugin {
 		$client = $this->_initSwordClient();
 		$depositReceipt = $client->replaceMetadata(
 						$study->getEditUri(),
-						$this->getSetting($article->getJournalId(), 'username'), 
-						$this->getSetting($article->getJournalId(), 'password'),						
+						$this->getSetting($article->getJournalId(), 'username'),
+						$this->getSetting($article->getJournalId(), 'password'),
 						'', // on behalf of
 						$package->getAtomEntryFilePath());
 
@@ -1357,7 +1357,7 @@ class DataversePlugin extends GenericPlugin {
 		}
 		return $metadataReplaced;
 	}
-	
+
 	/**
 	 * Deposit suppfiles in Dataverse study.
 	 * @param $study DataverseStudy Study associated with author submission
@@ -1367,14 +1367,14 @@ class DataversePlugin extends GenericPlugin {
 	function depositFiles($study, $suppFiles) {
 		$packager = new DataversePackager();
 		foreach ($suppFiles as $suppFile) {
-			$suppFile->setFileStage(ARTICLE_FILE_SUPP); // workaround for #8444			
+			$suppFile->setFileStage(ARTICLE_FILE_SUPP); // workaround for #8444
 			$packager->addFile($suppFile->getFilePath(), $suppFile->getOriginalFileName());
 		}
 		$packager->createPackage();
 
 		// Deposit the package
 		$journal =& Request::getJournal();
-		$client = $this->_initSwordClient();		 
+		$client = $this->_initSwordClient();
 		$depositReceipt = $client->deposit(
 						$study->getEditMediaUri(),
 						$this->getSetting($journal->getId(), 'username'),
@@ -1383,8 +1383,8 @@ class DataversePlugin extends GenericPlugin {
 						$packager->getPackageFilePath(),
 						$packager->getPackaging(),
 						$packager->getContentType(),
-						false); // in progress? false 
-		
+						false); // in progress? false
+
 		$deposited = ($depositReceipt->sac_status == DATAVERSE_PLUGIN_HTTP_STATUS_CREATED);
 		if ($deposited) {
 			// Get the study statement & update the local file list
@@ -1405,7 +1405,7 @@ class DataversePlugin extends GenericPlugin {
 						}
 					}
 					// Create or update DataverseFile linking suppfile with deposited file
-					$this->import('classes.DataverseFile');			
+					$this->import('classes.DataverseFile');
 					$dvFileDao =& DAORegistry::getDAO('DataverseFileDAO');
 					foreach ($suppFiles as $suppFile) {
 						$suppFileKey = str_replace(' ', '_', $suppFile->getOriginalFileName());
@@ -1414,14 +1414,14 @@ class DataversePlugin extends GenericPlugin {
 							if (!$dvFile) {
 								$dvFile = new DataverseFile();
 								$dvFile->setSuppFileId($suppFile->getId());
-								$dvFile->setSubmissionId($study->getSubmissionId());						
+								$dvFile->setSubmissionId($study->getSubmissionId());
 								$dvFile->setStudyId($study->getId());
 								$dvFile->setContentSourceUri($dvFileIndex[$suppFileKey]);
-								$dvFileDao->insertDataverseFile($dvFile);												
+								$dvFileDao->insertDataverseFile($dvFile);
 							}
 							else {
 								$dvFile->setStudyId($study->getId());
-								$dvFile->setContentSourceUri($dvFileIndex[$suppFileKey]);						
+								$dvFile->setContentSourceUri($dvFileIndex[$suppFileKey]);
 								$dvFileDao->updateDataverseFile($dvFile);
 							}
 						}
@@ -1434,15 +1434,15 @@ class DataversePlugin extends GenericPlugin {
 			}
 		}
 		return $deposited;
-	}	
+	}
 
 	/**
-	 * Indicate whether Dataverse has been released. 
+	 * Indicate whether Dataverse has been released.
 	 * @param $journalId int Journal id
 	 * @return boolean True if journal's Dataverse has been released
 	 */
 	function dataverseIsReleased($journalId) {
-		$client = $this->_initSwordClient();		
+		$client = $this->_initSwordClient();
 		$depositReciept = $client->retrieveDepositReceipt(
 				$this->getSetting($journalId, 'dvUri'),
 				$this->getSetting($journalId, 'username'),
@@ -1459,7 +1459,7 @@ class DataversePlugin extends GenericPlugin {
 		}
 		return $released;
 	}
-	
+
 	/**
 	 * Release draft Dataverse associated with this journal. Supported in SWORD
 	 * API v1.1 / Dataverse 4.0.
@@ -1492,10 +1492,10 @@ class DataversePlugin extends GenericPlugin {
 		}
 		return $released;
 	}
-	
+
 	/**
 	 * Report whether study has been released
-	 * @param $study DataverseStudy 
+	 * @param $study DataverseStudy
 	 * @return boolean Study released
 	 */
 	function studyIsReleased($study) {
@@ -1504,9 +1504,9 @@ class DataversePlugin extends GenericPlugin {
 		$studyReleased = false;
 		try {
 			$statement = $client->retrieveAtomStatement(
-						$study->getStatementUri(), 
-						$this->getSetting($journal->getId(), 'username'), 
-						$this->getSetting($journal->getId(), 'password'), 
+						$study->getStatementUri(),
+						$this->getSetting($journal->getId(), 'username'),
+						$this->getSetting($journal->getId(), 'password'),
 						'');
 
 			if ($statement && $statement->sac_xml) {
@@ -1525,7 +1525,7 @@ class DataversePlugin extends GenericPlugin {
 		}
 		return $studyReleased;
 	}
-	
+
 	/**
 	 * Release draft study.
 	 * @param $study DataverseStudy
@@ -1533,11 +1533,11 @@ class DataversePlugin extends GenericPlugin {
 	 */
 	function releaseStudy($study) {
 		import('classes.notification.NotificationManager');
-		$notificationManager = new NotificationManager();		
+		$notificationManager = new NotificationManager();
 		$journal =& Request::getJournal();
 		$user =& Request::getUser();
 
-		// Dataverse released? 
+		// Dataverse released?
 		$dvReleased = $this->dataverseIsReleased($journal->getId());
 		if (!$dvReleased) {
 			// Try to release Dataverse via API
@@ -1545,7 +1545,7 @@ class DataversePlugin extends GenericPlugin {
 		}
 		// If release via API has failed or is not supported, notify JMs
 		if (!$dvReleased) {
-			$request =& Application::getRequest();										
+			$request =& Application::getRequest();
 			$roleDao =& DAORegistry::getDAO('RoleDAO');
 			$journalManagers =& $roleDao->getUsersByRoleId(ROLE_ID_JOURNAL_MANAGER, $journal->getId());
 			while ($journalManagers && !$journalManagers->eof()) {
@@ -1563,19 +1563,19 @@ class DataversePlugin extends GenericPlugin {
 		}
 
 		// Attempt to release/publish the study/dataset.
-		$client = $this->_initSwordClient();		
+		$client = $this->_initSwordClient();
 		$response = $client->completeIncompleteDeposit(
 						$study->getEditUri(),
 						$this->getSetting($journal->getId(), 'username'),
-						$this->getSetting($journal->getId(), 'password'),		
+						$this->getSetting($journal->getId(), 'password'),
 						''); // on behalf of
-		
-		$studyReleased = ($response->sac_status == DATAVERSE_PLUGIN_HTTP_STATUS_OK); 
+
+		$studyReleased = ($response->sac_status == DATAVERSE_PLUGIN_HTTP_STATUS_OK);
 		if ($studyReleased) {
 			// Retrieve deposit receipt & store updated data citation
 			$depositReceipt = $client->retrieveDepositReceipt(
-							$study->getEditUri(), 
-							$this->getSetting($journal->getId(), 'username'), 
+							$study->getEditUri(),
+							$this->getSetting($journal->getId(), 'username'),
 							$this->getSetting($journal->getId(), 'password'),
 							'');
 
@@ -1586,14 +1586,14 @@ class DataversePlugin extends GenericPlugin {
 			}
 			// Include citation & link to study in notification
 			$params = array('dataCitation' => $this->_formatDataCitation($study->getDataCitation(), $study->getPersistentUri()));
-			$notificationManager->createTrivialNotification($user->getId(), NOTIFICATION_TYPE_DATAVERSE_STUDY_RELEASED, $params);			
+			$notificationManager->createTrivialNotification($user->getId(), NOTIFICATION_TYPE_DATAVERSE_STUDY_RELEASED, $params);
 		}
 		else {
 			$notificationManager->createTrivialNotification($user->getId(), NOTIFICATION_TYPE_ERROR);
 		}
 		return $studyReleased;
 	}
-	
+
 	/**
 	 * Delete draft study or deaccession released study.
 	 * @param $study DataverseStudy
@@ -1603,16 +1603,16 @@ class DataversePlugin extends GenericPlugin {
 		$journal =& Request::getJournal();
 		$apiVersion = $this->getSetting($journal->getId(), 'apiVersion');
 
-		// Deaccessioning is not supported in Dataverse 4 / SWORD API v1.1. Only 
+		// Deaccessioning is not supported in Dataverse 4 / SWORD API v1.1. Only
 		// draft datasets can be deleted.
-		$studyDeleted = false;		
+		$studyDeleted = false;
 		if (version_compare($apiVersion, '1.1', '<') || !$this->studyIsReleased($study)) {
 			$client = $this->_initSwordClient();
 			$response = $client->deleteContainer(
-									$study->getEditUri(), 
+									$study->getEditUri(),
 									$this->getSetting($journal->getId(), 'username'),
 									$this->getSetting($journal->getId(), 'password'),
-									''); // on behalf of 
+									''); // on behalf of
 
 			if ($response->sac_status == DATAVERSE_PLUGIN_HTTP_STATUS_NO_CONTENT) {
 				$studyDeleted = true;
@@ -1629,7 +1629,7 @@ class DataversePlugin extends GenericPlugin {
 		}
 		return $studyDeleted;
 	}
-	
+
 	/**
 	 * Delete a file from a study
 	 * @param $dvFile DataverseFile
@@ -1639,10 +1639,10 @@ class DataversePlugin extends GenericPlugin {
 		$journal =& Request::getJournal();
 		if (!$dvFile->getContentSourceUri()) {
 			// File hasn't been deposited in Dataverse yet
-			$dvFileDao =& DAORegistry::getDAO('DataverseFileDAO');			
+			$dvFileDao =& DAORegistry::getDAO('DataverseFileDAO');
 			return $dvFileDao->deleteDataverseFile($dvFile);
 		}
-		
+
 		// File is in Dataverse. Remove from study & db.
 		$client = $this->_initSwordClient();
 		$response = $client->deleteResourceContent(
@@ -1651,11 +1651,11 @@ class DataversePlugin extends GenericPlugin {
 						$this->getSetting($journal->getId(), 'password'),
 						'' // on behalf of
 						);
-		
+
 		$fileDeleted = ($response->sac_status == DATAVERSE_PLUGIN_HTTP_STATUS_NO_CONTENT);
 		return $fileDeleted;
 	}
-	
+
 	/**
 	 * Hook callback: add content to custom notifications
 	 * @see NotificationManager::getNotificationContents()
@@ -1663,7 +1663,7 @@ class DataversePlugin extends GenericPlugin {
 	function getNotificationContents($hookName, $args) {
 		$notification =& $args[0];
 		$message =& $args[1];
-		
+
 		$type = $notification->getType();
 		assert(isset($type));
 
@@ -1674,11 +1674,11 @@ class DataversePlugin extends GenericPlugin {
 			case NOTIFICATION_TYPE_ERROR:
 				$message = __('plugins.generic.dataverse.notification.error');
 				break;
-			
+
 			case NOTIFICATION_TYPE_DATAVERSE_FILE_ADDED:
 				$message = __('plugins.generic.dataverse.notification.fileAdded');
 				break;
-			
+
 			case NOTIFICATION_TYPE_DATAVERSE_FILE_DELETED:
 				$message = __('plugins.generic.dataverse.notification.fileDeleted');
 				break;
@@ -1686,29 +1686,29 @@ class DataversePlugin extends GenericPlugin {
 			case NOTIFICATION_TYPE_DATAVERSE_STUDY_CREATED:
 				$message = __('plugins.generic.dataverse.notification.studyCreated');
 				break;
-			
+
 			case NOTIFICATION_TYPE_DATAVERSE_STUDY_UPDATED:
 				$message = __('plugins.generic.dataverse.notification.studyUpdated');
 				break;
-			
+
 			case NOTIFICATION_TYPE_DATAVERSE_STUDY_DELETED:
 				$message = __('plugins.generic.dataverse.notification.studyDeleted');
 				break;
-			
+
 			case NOTIFICATION_TYPE_DATAVERSE_STUDY_RELEASED:
 				$notificationSettingsDao =& DAORegistry::getDAO('NotificationSettingsDAO');
 				$params = $notificationSettingsDao->getNotificationSettings($notification->getId());
 				$message = __('plugins.generic.dataverse.notification.studyReleased', $notificationManager->getParamsForCurrentLocale($params));
 				break;
-			
+
 			case NOTIFICATION_TYPE_DATAVERSE_UNRELEASED:
 				$notificationSettingsDao =& DAORegistry::getDAO('NotificationSettingsDAO');
 				$params = $notificationSettingsDao->getNotificationSettings($notification->getId());
 				$message = __('plugins.generic.dataverse.notification.releaseDataverse', $notificationManager->getParamsForCurrentLocale($params));
 				break;
 		}
-	}	 
-	
+	}
+
 	/**
 	 * Wrapper function initializes SWORDv2 client with cURL option to allow
 	 * connections to servers with self-signed certificates.
@@ -1718,7 +1718,7 @@ class DataversePlugin extends GenericPlugin {
 	function _initSwordClient($options = array(CURLOPT_SSL_VERIFYPEER => FALSE)) {
 		return new SWORDAPPClient($options);
 	}
-	
+
 	/**
 	 * Indicates whether study is locked for processing
 	 * @param $study DataverseStudy
@@ -1726,28 +1726,28 @@ class DataversePlugin extends GenericPlugin {
 	 */
 	function studyIsLocked($study) {
 		$journal =& Request::getJournal();
-		$client = $this->_initSwordClient();		
-		$locked = false;		
+		$client = $this->_initSwordClient();
+		$locked = false;
 		try {
 			$statement = $client->retrieveAtomStatement(
-							$study->getStatementUri(), 
-							$this->getSetting($journal->getId(), 'username'), 
+							$study->getStatementUri(),
+							$this->getSetting($journal->getId(), 'username'),
 							$this->getSetting($journal->getId(), 'password'),
 							'');
 			if ($statement && $statement->sac_xml) {
-				$statementXml = new SimpleXMLElement($statement->sac_xml); 
+				$statementXml = new SimpleXMLElement($statement->sac_xml);
 				foreach ($statementXml->category as $category) {
 					if ($category->attributes()->term == 'locked') {
 						if ($category == 'true') $locked = true;
 						break;
 					}
-				}				 
+				}
 			}
 		}
 		catch (Exception $e) {
 			$application =& PKPApplication::getApplication();
 			error_log($application->getName() .': '. $e->getMessage() .': '. $e->getFile() . ': '. $e->getLine());
-		}			 
+		}
 		return $locked;
 	}
 
@@ -1770,8 +1770,8 @@ class DataversePlugin extends GenericPlugin {
 			$templateMgr->assign_by_ref('publishedArticle', $publishedArticle);
 		}
 		$templateMgr->assign_by_ref('issue', $issue);
-		$templateMgr->assign_by_ref('journal', $journal); 
-		
+		$templateMgr->assign_by_ref('journal', $journal);
+
 		return $templateMgr->fetch($this->getTemplatePath() .'citation'. $citationFormat .'.tpl');
 	}
 
@@ -1782,8 +1782,8 @@ class DataversePlugin extends GenericPlugin {
 	 * @return string Current API version parsed from deprecation warning
 	 */
 	function checkAPIVersion($serviceDocument) {
-		// Look for current version in deprecation message in warning attribute on workspace		
-		$newAPIVersion = '';		
+		// Look for current version in deprecation message in warning attribute on workspace
+		$newAPIVersion = '';
 		$pattern = 'current\s+version.+?'. preg_quote('/dvn/api/data-deposit/', '/') .'v(\d+(\.\d+)?)';
 
 		$sd_xml = new SimpleXMLElement($serviceDocument->sac_xml);
@@ -1798,10 +1798,10 @@ class DataversePlugin extends GenericPlugin {
 					}
 				}
 			}
-		}		
+		}
 		return $newAPIVersion;
 	}
-  
+
 	/**
 	 * Deposit receipt sent back by Data Deposit API contains a plain-text data
 	 * citation and a persistent URI. Replace URI in citation with markup to link
@@ -1813,10 +1813,10 @@ class DataversePlugin extends GenericPlugin {
 	function _formatDataCitation($dataCitation, $persistentUri) {
 	 return str_replace($persistentUri, '<a href="'. $persistentUri .'">'. $persistentUri .'</a>', strip_tags($dataCitation));
 	}
-	
+
 	/**
 	 * Format author bio statement, affiliation, and/or country as affiliation statement
-	 * @param $author Author 
+	 * @param $author Author
 	 * @param $locale string Get affiliation for locale
 	 * @return string Author affiliation
 	 */

@@ -128,7 +128,7 @@ class AuthorAction extends Action {
 				} else {
 					$editorName = $editor->getEditorFullName();
 				}
-				
+
 				$paramArray = array(
 					'editorialContactName' => $editorName,
 					'articleTitle' => $authorSubmission->getLocalizedTitle(),

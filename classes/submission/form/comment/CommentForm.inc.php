@@ -106,7 +106,7 @@ class CommentForm extends Form {
 		$commentDao =& DAORegistry::getDAO('ArticleCommentDAO');
 		$article = $this->article;
 
-		// Insert new comment		
+		// Insert new comment
 		$comment = new ArticleComment();
 		$comment->setCommentType($this->commentType);
 		$comment->setRoleId($this->roleId);

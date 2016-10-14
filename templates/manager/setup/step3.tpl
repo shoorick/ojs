@@ -427,7 +427,7 @@
 				}
 			});
 		});
-		
+
 		function permissionsValues() {
 			perm = ':';
 			licenseNames = ["copyrightYearBasis", "copyrightHolderType"];

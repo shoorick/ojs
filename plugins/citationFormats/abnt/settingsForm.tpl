@@ -16,7 +16,7 @@
 {/strip}
 <div id="abntCitationSettings">
 <div id="description">{translate key="plugins.citationFormats.abnt.manager.settings.description"}</div>
- 
+
 <div class="separator"></div>
 
 <br />

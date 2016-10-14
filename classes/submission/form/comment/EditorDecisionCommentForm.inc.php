@@ -33,7 +33,7 @@ class EditorDecisionCommentForm extends CommentForm {
 		$templateMgr->assign('pageTitle', 'submission.comments.editorAuthorCorrespondence');
 		$templateMgr->assign('articleId', $this->article->getId());
 		$templateMgr->assign('commentAction', 'postEditorDecisionComment');
-		$templateMgr->assign('hiddenFormParams', 
+		$templateMgr->assign('hiddenFormParams',
 			array(
 				'articleId' => $this->article->getId()
 			)
@@ -105,7 +105,7 @@ class EditorDecisionCommentForm extends CommentForm {
 			$recipients = array_merge($recipients, $editorAddresses);
 		}
 
-		parent::email($recipients);	
+		parent::email($recipients);
 	}
 }
 

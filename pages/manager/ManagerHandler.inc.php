@@ -10,7 +10,7 @@
  * @class ManagerHandler
  * @ingroup pages_manager
  *
- * @brief Handle requests for journal management functions. 
+ * @brief Handle requests for journal management functions.
  */
 
 import('classes.handler.Handler');
@@ -22,7 +22,7 @@ class ManagerHandler extends Handler {
 	 **/
 	function ManagerHandler() {
 		parent::Handler();
-		
+
 		$this->addCheck(new HandlerValidatorJournal($this));
 		$this->addCheck(new HandlerValidatorRoles($this, true, null, null, array(ROLE_ID_SITE_ADMIN, ROLE_ID_JOURNAL_MANAGER)));
 	}
@@ -44,7 +44,7 @@ class ManagerHandler extends Handler {
 				$templateMgr->assign('latestVersion', $latestVersion);
 				$currentVersion =& VersionCheck::getCurrentDBVersion();
 				$templateMgr->assign('currentVersion', $currentVersion->getVersionString());
-				
+
 				// Get contact information for site administrator
 				$roleDao =& DAORegistry::getDAO('RoleDAO');
 				$siteAdmins =& $roleDao->getUsersByRoleId(ROLE_ID_SITE_ADMIN);
@@ -123,12 +123,12 @@ class ManagerHandler extends Handler {
 				: array(array(Request::url(null, 'user'), 'navigation.user'))
 		);
 	}
-	 
+
 	/**
 	 * Retrieves a list of special Journal Management settings related to the journal's inclusion of individual copyeditors, layout editors, and proofreaders.
 	 * @param $journalId int Journal ID of the journal from which the settings will be obtained
 	 * @return array
-	 */	
+	 */
 	function &retrieveRoleAssignmentPreferences($journalId) {
 		$journalSettingsDao =& DAORegistry::getDAO('JournalSettingsDAO');
 		$journalSettings = $journalSettingsDao->getJournalSettings($journalId);

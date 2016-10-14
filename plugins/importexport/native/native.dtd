@@ -84,7 +84,7 @@
 <!ELEMENT subject (#PCDATA)>
 	<!ATTLIST subject
 		locale CDATA #IMPLIED>
-		
+
 <!ELEMENT file (%externalformat;)>
 
 <!ELEMENT image (%externalformat;)>

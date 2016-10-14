@@ -147,7 +147,7 @@ class ArticleMailTemplate extends MailTemplate {
 		}
 		return $returner;
 	}
-	
+
 	function toAssignedReviewingSectionEditors($articleId) {
 		$returner = array();
 		$editAssignmentDao =& DAORegistry::getDAO('EditAssignmentDAO');
@@ -183,7 +183,7 @@ class ArticleMailTemplate extends MailTemplate {
 		}
 		return $returner;
 	}
-		
+
 	function ccAssignedReviewingSectionEditors($articleId) {
 		$returner = array();
 		$editAssignmentDao =& DAORegistry::getDAO('EditAssignmentDAO');

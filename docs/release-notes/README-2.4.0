@@ -21,7 +21,7 @@ New Features
 	#7670# Make Static Pages plugin function site-wide
 	#7683# Add email validity check to mass mailer
 	#7684# Add botAgents.txt to WAL, Add more bots
-	
+
 
 Bug Fixes
 ---------

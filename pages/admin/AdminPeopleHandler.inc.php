@@ -10,7 +10,7 @@
  * @class AdminPeopleHandler
  * @ingroup pages_admin
  *
- * @brief Handle requests for people management functions. 
+ * @brief Handle requests for people management functions.
  */
 
 import('pages.admin.AdminHandler');

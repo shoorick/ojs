@@ -94,7 +94,7 @@ class ThesisDAO extends DAO {
 			'SELECT journal_id FROM theses WHERE thesis_id = ?', $thesisId
 		);
 
-		return isset($result->fields[0]) ? $result->fields[0] : 0;	
+		return isset($result->fields[0]) ? $result->fields[0] : 0;
 	}
 
 	/**
@@ -110,7 +110,7 @@ class ThesisDAO extends DAO {
 			'SELECT thesis_id FROM theses WHERE status = ? AND thesis_id = ?', array(THESIS_STATUS_ACTIVE, $thesisId)
 		);
 
-		return isset($result->fields[0]) ? true : false;	
+		return isset($result->fields[0]) ? true : false;
 	}
 
 	/**
@@ -161,7 +161,7 @@ class ThesisDAO extends DAO {
 	/**
 	 * Insert a new Thesis.
 	 * @param $thesis Thesis
-	 * @return int 
+	 * @return int
 	 */
 	function insertThesis(&$thesis) {
 		$ret = $this->update(
@@ -282,7 +282,7 @@ class ThesisDAO extends DAO {
 
 	/**
 	 * Delete a thesis.
-	 * @param $thesis Thesis 
+	 * @param $thesis Thesis
 	 * @return boolean
 	 */
 	function deleteThesis($thesis) {
@@ -320,7 +320,7 @@ class ThesisDAO extends DAO {
 	 * @param $dateTo date optional, ending approval date
 	 * @param $resultOrder int optional, order of the results
 	 * @param $rangeInfo object DBRangeInfo object describing range of results to return
-	 * @return object DAOResultFactory containing matching Theses 
+	 * @return object DAOResultFactory containing matching Theses
 	 */
 	function &getThesesByJournalId($journalId, $searchType = null, $search = null, $searchMatch = null, $dateFrom = null, $dateTo = null, $resultOrder = null, $rangeInfo = null) {
 		$paramArray = array((int) $journalId);
@@ -419,7 +419,7 @@ class ThesisDAO extends DAO {
 	 * @param $dateTo date optional, ending approval date
 	 * @param $resultOrder int optional, order of the results
 	 * @param $rangeInfo object DBRangeInfo object describing range of results to return
-	 * @return object DAOResultFactory containing matching Theses 
+	 * @return object DAOResultFactory containing matching Theses
 	 */
 	function &getActiveThesesByJournalId($journalId, $searchType = null, $search = null, $searchMatch = null, $dateFrom = null, $dateTo = null, $resultOrder = null, $rangeInfo = null) {
 		$thesisPlugin =& PluginRegistry::getPlugin('generic', $this->parentPluginName);

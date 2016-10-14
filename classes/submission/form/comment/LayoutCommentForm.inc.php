@@ -33,7 +33,7 @@ class LayoutCommentForm extends CommentForm {
 		$templateMgr->assign('pageTitle', 'submission.comments.comments');
 		$templateMgr->assign('commentAction', 'postLayoutComment');
 		$templateMgr->assign('commentType', 'layout');
-		$templateMgr->assign('hiddenFormParams', 
+		$templateMgr->assign('hiddenFormParams',
 			array(
 				'articleId' => $this->article->getId()
 			)

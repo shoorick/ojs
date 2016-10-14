@@ -187,7 +187,7 @@ class EditAssignmentDAO extends DAO {
 					editor_id = ?,
 					can_review = ?,
 					can_edit = ?,
-					date_assigned = %s,                                        
+					date_assigned = %s,
 					date_notified = %s,
 					date_underway = %s
 				WHERE edit_id = ?',

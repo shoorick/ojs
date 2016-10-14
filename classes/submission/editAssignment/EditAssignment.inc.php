@@ -12,7 +12,7 @@
  * @see EditAssignmentDAO
  *
  * @brief Describes edit assignment properties.
- * 
+ *
  */
 
 class EditAssignment extends DataObject {
@@ -139,7 +139,7 @@ class EditAssignment extends DataObject {
 	function setDateAssigned($dateAssigned) {
 		return $this->setData('dateAssigned', $dateAssigned);
 	}
-        
+
 	/**
 	 * Get date editor notified.
 	 * @return timestamp

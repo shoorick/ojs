@@ -31,12 +31,12 @@ class DOAJExportDom {
 
 		// Records node contains all articles, each called a record
 		$records = XMLCustomWriter::createElement($doc, 'records');
-		
+
 		// retrieve selected issues
 		$selectedIssues = array();
 		if (isset($selectedObjects[DOAJ_EXPORT_ISSUES])) {
 			$selectedIssues = $selectedObjects[DOAJ_EXPORT_ISSUES];
-			
+
 			// make sure the selected issues belong to the current journal
 			foreach($selectedIssues as $key => $selectedIssueId) {
 				$selectedIssue = $issueDao->getIssueById($selectedIssueId, $journalId);
@@ -48,7 +48,7 @@ class DOAJExportDom {
 		$selectedArticles = array();
 		if (isset($selectedObjects[DOAJ_EXPORT_ARTICLES])) {
 			$selectedArticles = $selectedObjects[DOAJ_EXPORT_ARTICLES];
-		
+
 			// make sure the selected articles belong to the current journal
 			foreach($selectedArticles as $key => $selectedArticleId) {
 				$selectedArticle = $articleDao->getArticle($selectedArticleId, $journalId);
@@ -58,14 +58,14 @@ class DOAJExportDom {
 
 		$pubArticles = $pubArticleDao->getPublishedArticlesByJournalId($journalId);
 		while ($pubArticle = $pubArticles->next()) {
-			
+
 			// check for selected issues:
 			$issueId = $pubArticle->getIssueId();
 			if (!empty($selectedIssues) && !in_array($issueId, $selectedIssues)) continue;
 
 			$issue = $issueDao->getIssueById($issueId);
 			if(!$issue) continue;
-			
+
 			// check for selected articles:
 			$articleId = $pubArticle->getArticleId();
 			if (!empty($selectedArticles) && !in_array($articleId, $selectedArticles)) continue;
@@ -108,7 +108,7 @@ class DOAJExportDom {
 
 		/* --- Article's publication date, volume, issue, DOI --- */
 		if ($article->getDatePublished()) {
-			XMLCustomWriter::createChildWithText($doc, $root, 'publicationDate', DOAJExportDom::formatDate($article->getDatePublished()), false);			
+			XMLCustomWriter::createChildWithText($doc, $root, 'publicationDate', DOAJExportDom::formatDate($article->getDatePublished()), false);
 		}
 		else {
 			XMLCustomWriter::createChildWithText($doc, $root, 'publicationDate', DOAJExportDom::formatDate($issue->getDatePublished()), false);

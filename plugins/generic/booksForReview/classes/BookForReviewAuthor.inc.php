@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @file plugins/generic/booksForReview/classes/BookForReviewAuthor.inc.php 
+ * @file plugins/generic/booksForReview/classes/BookForReviewAuthor.inc.php
  *
  * Copyright (c) 2013-2016 Simon Fraser University Library
  * Copyright (c) 2003-2016 John Willinsky

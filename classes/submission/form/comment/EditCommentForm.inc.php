@@ -56,7 +56,7 @@ class EditCommentForm extends Form {
 			'comments' => $comment->getComments(),
 			'viewable' => $comment->getViewable(),
 		);
-	}	
+	}
 
 	/**
 	 * Display the form.
@@ -99,7 +99,7 @@ class EditCommentForm extends Form {
 	function execute() {
 		$commentDao =& DAORegistry::getDAO('ArticleCommentDAO');
 
-		// Update comment		
+		// Update comment
 		$comment = $this->comment;
 		$comment->setCommentTitle($this->getData('commentTitle'));
 		$comment->setComments($this->getData('comments'));

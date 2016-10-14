@@ -10,7 +10,7 @@
  * @class ThesisHandler
  * @ingroup plugins_generic_thesis
  *
- * @brief Handle requests for public thesis abstract functions. 
+ * @brief Handle requests for public thesis abstract functions.
  */
 
 import('classes.handler.Handler');
@@ -51,7 +51,7 @@ class ThesisHandler extends Handler {
 			if (!empty($search)) {
 				$searchField = Request::getUserVar('searchField');
 				$searchMatch = Request::getUserVar('searchMatch');
-			}			
+			}
 
 			$thesisDao =& DAORegistry::getDAO('ThesisDAO');
 			$rangeInfo =& Handler::getRangeInfo('theses');
@@ -126,7 +126,7 @@ class ThesisHandler extends Handler {
 
 	/**
 	 * Display thesis details.
-	 * @param $args array optional, first parameter is the ID of the thesis to display 
+	 * @param $args array optional, first parameter is the ID of the thesis to display
 	 */
 	function view($args = array()) {
 		$this->validate();
@@ -209,8 +209,8 @@ class ThesisHandler extends Handler {
 
 		} else {
 				Request::redirect(null, 'index');
-		}	
-	}	
+		}
+	}
 
 	/**
 	 * Captcha support.

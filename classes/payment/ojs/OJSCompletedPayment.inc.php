@@ -250,9 +250,9 @@ class OJSCompletedPayment extends Payment {
 						$subscriptionType =& $subscriptionTypeDao->getSubscriptionType($gift->getAssocId());
 
 						if ($subscriptionType) {
-							return $subscriptionType->getSubscriptionTypeDescription();	
+							return $subscriptionType->getSubscriptionTypeDescription();
 						} else {
-							return __('payment.type.gift') . ' ' . __('payment.type.gift.subscription');								
+							return __('payment.type.gift') . ' ' . __('payment.type.gift.subscription');
 						}
 					}
 				}

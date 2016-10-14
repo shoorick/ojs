@@ -812,7 +812,7 @@ class NativeImportDom {
 			}
 		}
 		if ($hasErrors) return false;
-		
+
 		// Create submission mangement records
 		$signoffDao =& DAORegistry::getDAO('SignoffDAO');
 

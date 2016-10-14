@@ -10,7 +10,7 @@
  * @class SubscriptionAction
  * @ingroup subscriptions
  *
- * Common actions for subscription management functions. 
+ * Common actions for subscription management functions.
  */
 
 class SubscriptionAction {
@@ -31,7 +31,7 @@ class SubscriptionAction {
 										"status" => $status,
 										"count" => $statusCount,
 										"localeKey" => $localeKey
-									);		
+									);
 		}
 
 		$institutionalSubscriptionDao =& DAORegistry::getDAO('InstitutionalSubscriptionDAO');
@@ -44,7 +44,7 @@ class SubscriptionAction {
 										"status" => $status,
 										"count" => $statusCount,
 										"localeKey" => $localeKey
-									);		
+									);
 		}
 
 		$templateMgr =& TemplateManager::getManager();
@@ -227,7 +227,7 @@ class SubscriptionAction {
 			if ($subscriptionId == null) {
 				$templateMgr->assign('subscriptionTitle', 'manager.subscriptions.createTitle');
 			} else {
-				$templateMgr->assign('subscriptionTitle', 'manager.subscriptions.editTitle');	
+				$templateMgr->assign('subscriptionTitle', 'manager.subscriptions.editTitle');
 			}
 
 			if ($institutional) {
@@ -359,7 +359,7 @@ class SubscriptionAction {
 				if ($subscriptionId == null) {
 					$templateMgr->assign('subscriptionTitle', 'manager.subscriptions.createTitle');
 				} else {
-					$templateMgr->assign('subscriptionTitle', 'manager.subscriptions.editTitle');	
+					$templateMgr->assign('subscriptionTitle', 'manager.subscriptions.editTitle');
 				}
 
 				$subscriptionForm->display();
@@ -373,7 +373,7 @@ class SubscriptionAction {
 					if ($subscriptionId == null) {
 						$templateMgr->assign('subscriptionTitle', 'manager.subscriptions.createTitle');
 					} else {
-						$templateMgr->assign('subscriptionTitle', 'manager.subscriptions.editTitle');	
+						$templateMgr->assign('subscriptionTitle', 'manager.subscriptions.editTitle');
 					}
 
 					$subscriptionForm->display();
@@ -453,7 +453,7 @@ class SubscriptionAction {
 					$prevSubscriptionType = $subscriptionTypeDao->getSubscriptionType($prevId);
 					$prevSeq = $prevSubscriptionType->getSequence();
 				}
-				
+
 				$subscriptionType->setSequence($prevSeq + .5);
 			}
 
@@ -499,7 +499,7 @@ class SubscriptionAction {
 			if ($subscriptionTypeId == null) {
 				$templateMgr->assign('subscriptionTypeTitle', 'manager.subscriptionTypes.createTitle');
 			} else {
-				$templateMgr->assign('subscriptionTypeTitle', 'manager.subscriptionTypes.editTitle');	
+				$templateMgr->assign('subscriptionTypeTitle', 'manager.subscriptionTypes.editTitle');
 			}
 
 			$subscriptionTypeForm = new SubscriptionTypeForm($subscriptionTypeId);
@@ -546,13 +546,13 @@ class SubscriptionAction {
 				if ($subscriptionTypeId == null) {
 					$templateMgr->assign('subscriptionTypeTitle', 'manager.subscriptionTypes.createTitle');
 				} else {
-					$templateMgr->assign('subscriptionTypeTitle', 'manager.subscriptionTypes.editTitle');	
+					$templateMgr->assign('subscriptionTypeTitle', 'manager.subscriptionTypes.editTitle');
 				}
 
 				$subscriptionTypeForm->display();
 				return false;
 			}
-		} 
+		}
 	}
 
 	/**
@@ -572,7 +572,7 @@ class SubscriptionAction {
 
 		import('classes.payment.ojs.OJSPaymentManager');
 		$paymentManager = new OJSPaymentManager($request);
-		$templateMgr->assign('acceptSubscriptionPayments', $paymentManager->acceptSubscriptionPayments());				
+		$templateMgr->assign('acceptSubscriptionPayments', $paymentManager->acceptSubscriptionPayments());
 
 		$subscriptionPolicyForm = new SubscriptionPolicyForm();
 		if ($subscriptionPolicyForm->isLocaleResubmit()) {
@@ -603,7 +603,7 @@ class SubscriptionAction {
 
 		import('classes.payment.ojs.OJSPaymentManager');
 		$paymentManager = new OJSPaymentManager($request);
-		$templateMgr->assign('acceptSubscriptionPayments', $paymentManager->acceptSubscriptionPayments());				
+		$templateMgr->assign('acceptSubscriptionPayments', $paymentManager->acceptSubscriptionPayments());
 
 		if ($subscriptionPolicyForm->validate()) {
 			$subscriptionPolicyForm->execute();
@@ -650,7 +650,7 @@ class SubscriptionAction {
 			$rolePath = $roleDao->getRolePath(ROLE_ID_SUBSCRIPTION_MANAGER);
 		} else {
 			$rolePath = $roleDao->getRolePath(ROLE_ID_JOURNAL_MANAGER);
-		}		
+		}
 
 		$paramArray = array(
 			'subscriptionType' => $subscriptionType->getSummaryString(),

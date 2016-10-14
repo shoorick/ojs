@@ -63,7 +63,7 @@ class EditorAction extends SectionEditorAction {
 
 			// Make the selected editor the new editor
 			$editAssignment->setEditorId($sectionEditorId);
-			$editAssignment->setDateAssigned(Core::getCurrentDate()); 
+			$editAssignment->setDateAssigned(Core::getCurrentDate());
 			$editAssignment->setDateNotified((is_array($send) && isset($send['skip']))?null:Core::getCurrentDate());
 			$editAssignment->setDateUnderway(null);
 

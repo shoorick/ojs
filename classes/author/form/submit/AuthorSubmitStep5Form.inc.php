@@ -141,7 +141,7 @@ class AuthorSubmitStep5Form extends AuthorSubmitForm {
 		$article->setSubmissionProgress(0);
 		$article->stampStatusModified();
 		$articleDao->updateArticle($article);
-		
+
 		// Setup default copyright/license metadata at finalization of submission.
 		$article->initializePermissions();
 		$articleDao->updateLocaleFields($article);
