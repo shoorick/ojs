@@ -59,7 +59,7 @@
 	<tr valign="top">
 		<td width="20%" class="label">{fieldLabel name="mailingAddress" key="common.mailingAddress"}</td>
 		<td width="80%" class="value">
-			<textarea name="mailingAddress" id="mailingAddress" rows="3" cols="40" class="textArea">{$mailingAddress|escape}</textarea>
+      <textarea name="mailingAddress[{$formLocale|escape}]" id="mailingAddress" rows="3" cols="40" class="textArea">{$mailingAddress[$formLocale]|escape}</textarea>
 			<br />
 			<span class="instruct">{translate key="manager.setup.mailingAddressDescription"}</span>
 		</td>
@@ -89,7 +89,7 @@
 <table width="100%" class="data">
 	<tr valign="top">
 		<td width="20%" class="label">{fieldLabel name="contactName" key="user.name" required="true"}</td>
-		<td width="80%" class="value"><input type="text" name="contactName" id="contactName" value="{$contactName|escape}" size="30" maxlength="60" class="textField" /></td>
+    <td width="80%" class="value"><input type="text" name="contactName[{$formLocale|escape}]" id="contactName" value="{$contactName[$formLocale]|escape}" size="30" maxlength="60" class="textField" /></td>
 	</tr>
 	<tr valign="top">
 		<td width="20%" class="label">{fieldLabel name="contactTitle" key="user.title"}</td>
@@ -128,7 +128,7 @@
 <table width="100%" class="data">
 	<tr valign="top">
 		<td width="20%" class="label">{fieldLabel name="supportName" key="user.name" required="true"}</td>
-		<td width="80%" class="value"><input type="text" name="supportName" id="supportName" value="{$supportName|escape}" size="30" maxlength="60" class="textField" /></td>
+		<td width="80%" class="value"><input type="text" name="supportName[{$formLocale|escape}]" id="supportName" value="{$supportName[$formLocale]|escape}" size="30" maxlength="60" class="textField" /></td>
 	</tr>
 	<tr valign="top">
 		<td width="20%" class="label">{fieldLabel name="supportEmail" key="user.email" required="true"}</td>
@@ -183,7 +183,7 @@
 	</tr>
 	<tr valign="top">
 		<td width="20%" class="label">{fieldLabel name="publisherInstitution" key="manager.setup.institution"}</td>
-		<td width="80%" class="value"><input type="text" name="publisherInstitution" id="publisherInstitution" value="{$publisherInstitution|escape}" size="40" maxlength="90" class="textField" /></td>
+    <td width="80%" class="value"><input type="text" name="publisherInstitution[{$formLocale|escape}]" id="publisherInstitution" value="{$publisherInstitution[$formLocale]|escape}" size="40" maxlength="90" class="textField" /></td>
 	</tr>
 	<tr valign="top">
 		<td width="20%" class="label">{fieldLabel name="publisherUrl" key="common.url"}</td>
@@ -334,4 +334,3 @@
 </form>
 
 {include file="common/footer.tpl"}
-

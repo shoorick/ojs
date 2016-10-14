@@ -19,8 +19,7 @@
 <table class="data" width="100%">
 	<tr>
 		<td class="label" width="20%">{translate key="user.role.layoutEditor"}</td>
-		<td class="value" width="80%">{if $layoutSignoff->getUserId()}{$layoutEditor->getFullName()|escape}{else}{translate key="common.none"}{/if}</td>
-	</tr>
+		<td class="value" width="80%">{if $layoutSignoff->getUserId()}{$layoutEditor->getLocalizedFullName()|escape}{else}{translate key="common.none"}{/if}</td>	</tr>
 </table>
 </div>
 {/if}
@@ -74,4 +73,3 @@
 {/if}
 </div>
 </div>
-

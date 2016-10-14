@@ -13,7 +13,7 @@
 {include file="common/header.tpl"}
 {/strip}
 
-<h3 id="userFullName">{$user->getFullName()|escape}</h3>
+<h3 id="userFullName">{$user->getLocalizedFullName()|escape}</h3>
 <div id="profile">
 <h4>{translate key="user.profile"}</h4>
 
@@ -30,15 +30,15 @@
 	</tr>
 	<tr valign="top">
 		<td class="label">{translate key="user.firstName"}</td>
-		<td class="value">{$user->getFirstName()|escape|default:"&mdash;"}</td>
+		<td class="value">{$user->getLocalizedFirstName()|escape|default:"&mdash;"}</td>
 	</tr>
 	<tr valign="top">
 		<td class="label">{translate key="user.middleName"}</td>
-		<td class="value">{$user->getMiddleName()|escape|default:"&mdash;"}</td>
+		<td class="value">{$user->getLocalizedMiddleName()|escape|default:"&mdash;"}</td>
 	</tr>
 	<tr valign="top">
 		<td class="label">{translate key="user.lastName"}</td>
-		<td class="value">{$user->getLastName()|escape|default:"&mdash;"}</td>
+		<td class="value">{$user->getLocalizedLastName()|escape|default:"&mdash;"}</td>
 	</tr>
 	<tr valign="top">
 		<td class="label">{translate key="user.affiliation"}</td>
@@ -152,4 +152,3 @@
 {/if}
 </div>
 {include file="common/footer.tpl"}
-

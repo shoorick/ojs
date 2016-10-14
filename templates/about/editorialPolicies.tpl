@@ -6,7 +6,7 @@
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * About the Journal / Editorial Policies.
- * 
+ *
  *}
 {strip}
 {assign var="pageTitle" value="about.editorialPolicies"}
@@ -57,13 +57,13 @@
 				{translate key="user.role.editors"}
 				<ul>
 				{/if}
-				<li>{$sectionEditor->getFirstName()|escape} {$sectionEditor->getLastName()|escape}{if $sectionEditor->getLocalizedAffiliation()}, {$sectionEditor->getLocalizedAffiliation()|escape}{/if}</li>
+				<li>{$sectionEditor->getLocalizedFirstName()|escape} {$sectionEditor->getLocalizedLastName()|escape}{if $sectionEditor->getLocalizedAffiliation()}, {$sectionEditor->getLocalizedAffiliation()|escape}{/if}</li>
 			{/foreach}
 		{/if}
 	{/foreach}
 	{if $hasEditors}</ul>{/if}
 
-	<table width="60%">
+	<table class="section-checkboxes">
 		<tr>
 			<td width="33%">{if !$section->getEditorRestricted()}{icon name="checked"}{else}{icon name="unchecked"}{/if} {translate key="manager.sections.open"}</td>
 			<td width="33%">{if $section->getMetaIndexed()}{icon name="checked"}{else}{icon name="unchecked"}{/if} {translate key="manager.sections.indexed"}</td>
@@ -90,7 +90,7 @@
 </div>
 {/if}
 
-{if $currentJournal->getSetting('publishingMode') == $smarty.const.PUBLISHING_MODE_OPEN && $currentJournal->getLocalizedSetting('openAccessPolicy') != ''} 
+{if $currentJournal->getSetting('publishingMode') == $smarty.const.PUBLISHING_MODE_OPEN && $currentJournal->getLocalizedSetting('openAccessPolicy') != ''}
 <div id="openAccessPolicy"><h3>{translate key="about.openAccessPolicy"}</h3>
 <p>{$currentJournal->getLocalizedSetting('openAccessPolicy')|nl2br}</p>
 
@@ -98,8 +98,8 @@
 </div>
 {/if}
 
-{if $currentJournal->getSetting('publishingMode') == $smarty.const.PUBLISHING_MODE_SUBSCRIPTION && $currentJournal->getSetting('enableAuthorSelfArchive')} 
-<div id="authorSelfArchivePolicy"><h3>{translate key="about.authorSelfArchive"}</h3> 
+{if $currentJournal->getSetting('publishingMode') == $smarty.const.PUBLISHING_MODE_SUBSCRIPTION && $currentJournal->getSetting('enableAuthorSelfArchive')}
+<div id="authorSelfArchivePolicy"><h3>{translate key="about.authorSelfArchive"}</h3>
 <p>{$currentJournal->getLocalizedSetting('authorSelfArchivePolicy')|nl2br}</p>
 
 <div class="separator">&nbsp;</div>
@@ -107,7 +107,7 @@
 {/if}
 
 {if $currentJournal->getSetting('publishingMode') == $smarty.const.PUBLISHING_MODE_SUBSCRIPTION && $currentJournal->getSetting('enableDelayedOpenAccess')}
-<div id="delayedOpenAccessPolicy"><h3>{translate key="about.delayedOpenAccess"}</h3> 
+<div id="delayedOpenAccessPolicy"><h3>{translate key="about.delayedOpenAccess"}</h3>
 <p>{translate key="about.delayedOpenAccessDescription1"} {$currentJournal->getSetting('delayedOpenAccessDuration')} {translate key="about.delayedOpenAccessDescription2"}</p>
 {if $currentJournal->getLocalizedSetting('delayedOpenAccessPolicy') != ''}
 	<p>{$currentJournal->getLocalizedSetting('delayedOpenAccessPolicy')|nl2br}</p>
@@ -171,4 +171,3 @@
 {/foreach}
 
 {include file="common/footer.tpl"}
-

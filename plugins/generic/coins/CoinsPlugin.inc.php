@@ -71,16 +71,16 @@ class CoinsPlugin extends GenericPlugin {
 				array('rft_id', Request::url(null, 'article', 'view', $article->getId())),
 				array('rft_val_fmt', 'info:ofi/fmt:kev:mtx:journal'),
 				array('rft.genre', 'article'),
-				array('rft.title', $journal->getLocalizedTitle()),
+				array('rft.title',  $journal->getLocalizedTitle()),
 				array('rft.jtitle', $journal->getLocalizedTitle()),
 				array('rft.atitle', $article->getLocalizedTitle()),
 				array('rft.artnum', $article->getBestArticleId()),
 				array('rft.stitle', $journal->getLocalizedSetting('abbreviation')),
 				array('rft.volume', $issue->getVolume()),
-				array('rft.issue', $issue->getNumber()),
-				array('rft.aulast', $firstAuthor->getLastName()),
-				array('rft.aufirst', $firstAuthor->getFirstName()),
-				array('rft.auinit', $firstAuthor->getMiddleName())
+				array('rft.issue',  $issue->getNumber()),
+				array('rft.aulast',  $firstAuthor->getLocalizedLastName()),
+				array('rft.aufirst', $firstAuthor->getLocalizedFirstName()),
+				array('rft.auinit',  $firstAuthor->getLocalizedMiddleName())
 			);
 
 			$datePublished = $article->getDatePublished();
@@ -90,7 +90,7 @@ class CoinsPlugin extends GenericPlugin {
 			}
 
 			foreach ($authors as $author) {
-				$vars[] = array('rft.au', $author->getFullName());
+				$vars[] = array('rft.au', $author->getLocalizedFullName());
 			}
 
 			if ($doi = $article->getPubId('doi')) $vars[] = array('rft_id', 'info:doi/' . $doi);

@@ -35,7 +35,11 @@ class RoleDAO extends DAO {
 	 */
 	function &getRole($journalId, $userId, $roleId) {
 		$result =& $this->retrieve(
-			'SELECT * FROM roles WHERE journal_id = ? AND user_id = ? AND role_id = ?',
+			'SELECT *
+			FROM roles
+			WHERE journal_id = ?
+				AND user_id = ?
+				AND role_id = ?',
 			array(
 				(int) $journalId,
 				(int) $userId,
@@ -163,7 +167,19 @@ class RoleDAO extends DAO {
 	function &getUsersByRoleId($roleId = null, $journalId = null, $searchType = null, $search = null, $searchMatch = null, $dbResultRange = null, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
 		$users = array();
 
-		$paramArray = array('interest');
+		$appLocalePrimaryLocale = AppLocale::getPrimaryLocale();
+		$appLocaleLocale        = AppLocale::getLocale();
+
+		$paramArray = array(
+			'interest',
+			'firstName',   $appLocalePrimaryLocale,
+			'firstName',   $appLocaleLocale,
+			'middleName',  $appLocalePrimaryLocale,
+			'middleName',  $appLocaleLocale,
+			'lastName',    $appLocalePrimaryLocale,
+			'lastName',    $appLocaleLocale
+		);
+
 		if (isset($roleId)) $paramArray[] = (int) $roleId;
 		if (isset($journalId)) $paramArray[] = (int) $journalId;
 
@@ -174,10 +190,10 @@ class RoleDAO extends DAO {
 		$searchSql = '';
 
 		$searchTypeMap = array(
-			USER_FIELD_FIRSTNAME => 'u.first_name',
-			USER_FIELD_LASTNAME => 'u.last_name',
-			USER_FIELD_USERNAME => 'u.username',
-			USER_FIELD_EMAIL => 'u.email',
+			USER_FIELD_FIRSTNAME => 'u.first_name', // FIXME Should be localized
+			USER_FIELD_LASTNAME  => 'u.last_name',
+			USER_FIELD_USERNAME  => 'u.username',
+			USER_FIELD_EMAIL     => 'u.email',
 			USER_FIELD_INTERESTS => 'cves.setting_value'
 		);
 
@@ -208,16 +224,85 @@ class RoleDAO extends DAO {
 				break;
 		}
 
-		$searchSql .= ($sortBy?(' ORDER BY ' . $this->getSortMapping($sortBy) . ' ' . $this->getDirectionMapping($sortDirection)) : '');
+		$searchSql .= (
+			$sortBy
+			? (
+			   ' ORDER BY ' . $this->getSortMapping($sortBy) . ' '
+			   . $this->getDirectionMapping($sortDirection))
+			: ''
+		);
 
 		$result =& $this->retrieveRange(
-			'SELECT DISTINCT u.*
+			'SELECT DISTINCT u.*,
+				usfnl.locale  fn_locale,
+				usfnpl.locale fn_primary_locale,
+				usmnl.locale  mn_locale,
+				usmnpl.locale mn_primary_locale,
+				uslnl.locale  ln_locale,
+				uslnpl.locale ln_primary_locale,
+				CASE WHEN usfnl.setting_value = \'\'
+					THEN NULL
+					ELSE SUBSTRING(usfnl.setting_value  FROM 1 FOR 255)
+					END AS first_name_l,
+				CASE WHEN usfnpl.setting_value = \'\'
+					THEN NULL
+					ELSE SUBSTRING(usfnpl.setting_value FROM 1 FOR 255)
+					END AS first_name_pl,
+				CASE WHEN usmnl.setting_value = \'\'
+					THEN NULL
+					ELSE SUBSTRING(usmnl.setting_value  FROM 1 FOR 255)
+					END AS middle_name_l,
+				CASE WHEN usmnpl.setting_value = \'\'
+					THEN NULL
+					ELSE SUBSTRING(usmnpl.setting_value FROM 1 FOR 255)
+					END AS middle_name_pl,
+				CASE WHEN uslnl.setting_value = \'\'
+					THEN NULL
+					ELSE SUBSTRING(uslnl.setting_value  FROM 1 FOR 255)
+					END AS last_name_l,
+				CASE WHEN uslnpl.setting_value = \'\'
+					THEN NULL
+					ELSE SUBSTRING(uslnpl.setting_value FROM 1 FOR 255)
+					END AS last_name_pl
 			FROM	users u
-				LEFT JOIN controlled_vocabs cv ON (cv.symbolic = ?)
-				LEFT JOIN user_interests ui ON (ui.user_id = u.user_id)
-				LEFT JOIN controlled_vocab_entries cve ON (cve.controlled_vocab_id = cv.controlled_vocab_id AND cve.controlled_vocab_entry_id = ui.controlled_vocab_entry_id)
-				LEFT JOIN controlled_vocab_entry_settings cves ON (cves.controlled_vocab_entry_id = cve.controlled_vocab_entry_id),
-				roles AS r WHERE u.user_id = r.user_id ' . (isset($roleId)?'AND r.role_id = ?':'') . (isset($journalId) ? ' AND r.journal_id = ?' : '') . ' ' . $searchSql,
+				LEFT JOIN controlled_vocabs cv
+					ON (cv.symbolic = ?)
+				LEFT JOIN user_interests ui
+					ON (ui.user_id = u.user_id)
+				LEFT JOIN controlled_vocab_entries cve
+					ON (cve.controlled_vocab_id = cv.controlled_vocab_id
+						AND cve.controlled_vocab_entry_id = ui.controlled_vocab_entry_id)
+				LEFT JOIN controlled_vocab_entry_settings cves
+					ON (cves.controlled_vocab_entry_id = cve.controlled_vocab_entry_id)
+				LEFT JOIN user_settings usfnpl
+					ON (u.user_id = usfnpl.user_id
+						AND usfnpl.setting_name = ?
+						AND usfnpl.locale = ?)
+				LEFT JOIN user_settings usfnl
+					ON (u.user_id = usfnl.user_id
+						AND usfnl.setting_name = ?
+						AND usfnl.locale = ?)
+				LEFT JOIN user_settings usmnpl
+					ON (u.user_id = usmnpl.user_id
+						AND usmnpl.setting_name = ?
+						AND usmnpl.locale = ?)
+				LEFT JOIN user_settings usmnl
+					ON (u.user_id = usmnl.user_id
+						AND usmnl.setting_name = ?
+						AND usmnl.locale = ?)
+				LEFT JOIN user_settings uslnpl
+					ON (u.user_id = uslnpl.user_id
+						AND uslnpl.setting_name = ?
+						AND uslnpl.locale = ?)
+				LEFT JOIN user_settings uslnl
+					ON (u.user_id = uslnl.user_id
+						AND uslnl.setting_name = ?
+						AND uslnl.locale = ?),
+				roles AS r
+			WHERE u.user_id = r.user_id '
+			. (isset($roleId)    ? ' AND r.role_id = ?':'')
+			. (isset($journalId) ? ' AND r.journal_id = ?' : '')
+			. ' ' . $searchSql,
 			$paramArray,
 			$dbResultRange
 		);
@@ -238,14 +323,27 @@ class RoleDAO extends DAO {
 	function &getUsersByJournalId($journalId, $searchType = null, $search = null, $searchMatch = null, $dbResultRange = null, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
 		$users = array();
 
-		$paramArray = array('interest', (int) $journalId);
+		$appLocalePrimaryLocale = AppLocale::getPrimaryLocale();
+		$appLocaleLocale        = AppLocale::getLocale();
+
+		$paramArray = array(
+			'interest',
+			'firstName',   $appLocalePrimaryLocale,
+			'firstName',   $appLocaleLocale,
+			'middleName',  $appLocalePrimaryLocale,
+			'middleName',  $appLocaleLocale,
+			'lastName',    $appLocalePrimaryLocale,
+			'lastName',    $appLocaleLocale,
+			(int) $journalId
+		);
+
 		$searchSql = '';
 
 		$searchTypeMap = array(
-			USER_FIELD_FIRSTNAME => 'u.first_name',
-			USER_FIELD_LASTNAME => 'u.last_name',
-			USER_FIELD_USERNAME => 'u.username',
-			USER_FIELD_EMAIL => 'u.email',
+			USER_FIELD_FIRSTNAME => 'u.first_name', // FIXME Should be localized
+			USER_FIELD_LASTNAME  => 'u.last_name',
+			USER_FIELD_USERNAME  => 'u.username',
+			USER_FIELD_EMAIL 		 => 'u.email',
 			USER_FIELD_INTERESTS => 'cves.setting_value'
 		);
 
@@ -253,39 +351,107 @@ class RoleDAO extends DAO {
 			$fieldName = $searchTypeMap[$searchType];
 			switch ($searchMatch) {
 				case 'is':
-					$searchSql = "AND LOWER($fieldName) = LOWER(?)";
+					$searchSql = "HAVING LOWER($fieldName) = LOWER(?)";
 					$paramArray[] = $search;
 					break;
 				case 'contains':
-					$searchSql = "AND LOWER($fieldName) LIKE LOWER(?)";
+					$searchSql = "HAVING LOWER($fieldName) LIKE LOWER(?)";
 					$paramArray[] = '%' . $search . '%';
 					break;
 				case 'startsWith':
-					$searchSql = "AND LOWER($fieldName) LIKE LOWER(?)";
+					$searchSql = "HAVING LOWER($fieldName) LIKE LOWER(?)";
 					$paramArray[] = $search . '%';
 					break;
 			}
-		} elseif (!empty($search)) switch ($searchType) {
+		}
+		elseif (!empty($search))
+			switch ($searchType) {
 			case USER_FIELD_USERID:
 				$searchSql = 'AND u.user_id=?';
 				$paramArray[] = $search;
 				break;
 			case USER_FIELD_INITIAL:
-				$searchSql = 'AND LOWER(u.last_name) LIKE LOWER(?)';
+				$searchSql = 'AND LOWER(u.last_name) LIKE LOWER(?)'; // FIXME Should be localized
 				$paramArray[] = $search . '%';
 				break;
 		}
 
-		$searchSql .= ($sortBy?(' ORDER BY ' . $this->getSortMapping($sortBy) . ' ' . $this->getDirectionMapping($sortDirection)) : '');
+		$searchSql .= ($sortBy
+			? (' ORDER BY '
+				. $this->getSortMapping($sortBy) . ' '
+				. $this->getDirectionMapping($sortDirection))
+			: ''
+		);
 
 		$result =& $this->retrieveRange(
-			'SELECT DISTINCT u.*
+			'SELECT DISTINCT u.*,
+				usfnl.locale  fn_locale,
+				usfnpl.locale fn_primary_locale,
+				usmnl.locale  mn_locale,
+				usmnpl.locale mn_primary_locale,
+				uslnl.locale  ln_locale,
+				uslnpl.locale ln_primary_locale,
+				CASE WHEN usfnl.setting_value = \'\'
+					THEN NULL
+					ELSE SUBSTRING(usfnl.setting_value  FROM 1 FOR 255)
+					END AS first_name_l,
+				CASE WHEN usfnpl.setting_value = \'\'
+					THEN NULL
+					ELSE SUBSTRING(usfnpl.setting_value FROM 1 FOR 255)
+					END AS first_name_pl,
+				CASE WHEN usmnl.setting_value = \'\'
+					THEN NULL
+					ELSE SUBSTRING(usmnl.setting_value  FROM 1 FOR 255)
+					END AS middle_name_l,
+				CASE WHEN usmnpl.setting_value = \'\'
+					THEN NULL
+					ELSE SUBSTRING(usmnpl.setting_value FROM 1 FOR 255)
+					END AS middle_name_pl,
+				CASE WHEN uslnl.setting_value = \'\'
+					THEN NULL
+					ELSE SUBSTRING(uslnl.setting_value  FROM 1 FOR 255)
+					END AS last_name_l,
+				CASE WHEN uslnpl.setting_value = \'\'
+					THEN NULL
+					ELSE SUBSTRING(uslnpl.setting_value FROM 1 FOR 255)
+					END AS last_name_pl
 			FROM	users u
-				LEFT JOIN controlled_vocabs cv ON (cv.symbolic = ?)
-				LEFT JOIN user_interests ui ON (ui.user_id = u.user_id)
-				LEFT JOIN controlled_vocab_entries cve ON (cve.controlled_vocab_id = cv.controlled_vocab_id AND ui.controlled_vocab_entry_id = cve.controlled_vocab_entry_id)
-				LEFT JOIN controlled_vocab_entry_settings cves ON (cves.controlled_vocab_entry_id = cve.controlled_vocab_entry_id),
-				roles AS r WHERE u.user_id = r.user_id AND r.journal_id = ? ' . $searchSql,
+				LEFT JOIN controlled_vocabs cv
+					ON (cv.symbolic = ?)
+				LEFT JOIN user_interests ui
+					ON (ui.user_id = u.user_id)
+				LEFT JOIN controlled_vocab_entries cve
+					ON (cve.controlled_vocab_id = cv.controlled_vocab_id
+						AND ui.controlled_vocab_entry_id = cve.controlled_vocab_entry_id)
+				LEFT JOIN controlled_vocab_entry_settings cves
+					ON (cves.controlled_vocab_entry_id = cve.controlled_vocab_entry_id)
+				LEFT JOIN user_settings usfnpl
+					ON (u.user_id = usfnpl.user_id
+						AND usfnpl.setting_name = ?
+						AND usfnpl.locale = ?)
+				LEFT JOIN user_settings usfnl
+					ON (u.user_id = usfnl.user_id
+						AND usfnl.setting_name = ?
+						AND usfnl.locale = ?)
+				LEFT JOIN user_settings usmnpl
+					ON (u.user_id = usmnpl.user_id
+						AND usmnpl.setting_name = ?
+						AND usmnpl.locale = ?)
+				LEFT JOIN user_settings usmnl
+					ON (u.user_id = usmnl.user_id
+						AND usmnl.setting_name = ?
+						AND usmnl.locale = ?)
+				LEFT JOIN user_settings uslnpl
+					ON (u.user_id = uslnpl.user_id
+						AND uslnpl.setting_name = ?
+						AND uslnpl.locale = ?)
+				LEFT JOIN user_settings uslnl
+					ON (u.user_id = uslnl.user_id
+						AND uslnl.setting_name = ?
+						AND uslnl.locale = ?),
+				roles AS r
+			WHERE u.user_id = r.user_id
+				AND r.journal_id = ? ' . $searchSql,
 			$paramArray,
 			$dbResultRange
 		);
@@ -307,7 +473,10 @@ class RoleDAO extends DAO {
 		if ($roleId !== null) $params[] = (int) $roleId;
 
 		$result =& $this->retrieve(
-			'SELECT COUNT(DISTINCT(user_id)) FROM roles WHERE journal_id = ?' . ($roleId === null?'':' AND role_id = ?'),
+			'SELECT COUNT(DISTINCT(user_id))
+			FROM roles
+			WHERE journal_id = ?'
+			. ($roleId === null ? '' : ' AND role_id = ?'),
 			$params
 		);
 
@@ -386,10 +555,18 @@ class RoleDAO extends DAO {
 	 */
 	function deleteRoleByUserId($userId, $journalId  = null, $roleId = null) {
 		return $this->update(
-			'DELETE FROM roles WHERE user_id = ?' . (isset($journalId) ? ' AND journal_id = ?' : '') . (isset($roleId) ? ' AND role_id = ?' : ''),
-			isset($journalId) && isset($roleId) ? array((int) $userId, (int) $journalId, (int) $roleId)
-			: (isset($journalId) ? array((int) $userId, (int) $journalId)
-			: (isset($roleId) ? array((int) $userId, (int) $roleId) : (int) $userId))
+			'DELETE FROM roles WHERE user_id = ?'
+			. (isset($journalId) ? ' AND journal_id = ?' : '')
+			. (isset($roleId)    ? ' AND role_id    = ?' : ''),
+			isset($journalId) && isset($roleId)
+				?	array((int) $userId, (int) $journalId, (int) $roleId)
+				: (isset($journalId)
+					? array((int) $userId, (int) $journalId)
+					: (isset($roleId)
+						? array((int) $userId, (int) $roleId)
+						: (int) $userId
+					)
+				)
 		);
 	}
 
@@ -417,7 +594,11 @@ class RoleDAO extends DAO {
 	 */
 	function userHasRole($journalId, $userId, $roleId) {
 		$result =& $this->retrieve(
-			'SELECT COUNT(*) FROM roles WHERE journal_id = ? AND user_id = ? AND role_id = ?', array((int) $journalId, (int) $userId, (int) $roleId)
+			'SELECT COUNT(*) FROM roles
+			WHERE journal_id = ?
+				AND user_id = ?
+				AND role_id = ?',
+			array((int) $journalId, (int) $userId, (int) $roleId)
 		);
 		$returner = isset($result->fields[0]) && $result->fields[0] == 1 ? true : false;
 
@@ -433,6 +614,7 @@ class RoleDAO extends DAO {
 	 * @param $plural boolean get the plural form of the name
 	 * @return string
 	 */
+	// FIXME What about languages which have more than two numbers?
 	function getRoleName($roleId, $plural = false) {
 		switch ($roleId) {
 			case ROLE_ID_SITE_ADMIN:

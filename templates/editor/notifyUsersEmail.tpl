@@ -14,7 +14,7 @@
 
 {if (!$section.hideAuthor && $article->getHideAuthor() == $smarty.const.AUTHOR_TOC_DEFAULT) || $article->getHideAuthor() == $smarty.const.AUTHOR_TOC_SHOW}
 {foreach from=$article->getAuthors() item=author name=authorList}
-	{$author->getFullName()}{if !$smarty.foreach.authorList.last},{/if}
+	{$author->getLocalizedFullName()}{if !$smarty.foreach.authorList.last},{/if}
 {/foreach}
 {/if}
 
@@ -22,4 +22,3 @@
 
 {/foreach}
 {literal}{$templateSignature}{/literal}
-

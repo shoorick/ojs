@@ -98,15 +98,15 @@
 	</tr>
 	<tr valign="top">
 		<td class="label">{fieldLabel name="firstName" required="true" key="user.firstName"}</td>
-		<td class="value"><input type="text" name="firstName" id="firstName" value="{$firstName|escape}" size="20" maxlength="40" class="textField" /></td>
+    <td class="value"><input type="text" name="firstName[{$formLocale|escape}]" id="firstName" value="{$firstName[$formLocale]|escape}" size="20" maxlength="40" class="textField" /></td>
 	</tr>
 	<tr valign="top">
 		<td class="label">{fieldLabel name="middleName" key="user.middleName"}</td>
-		<td class="value"><input type="text" name="middleName" id="middleName" value="{$middleName|escape}" size="20" maxlength="40" class="textField" /></td>
+		<td class="value"><input type="text" name="middleName[{$formLocale|escape}]" id="middleName" value="{$middleName[$formLocale]|escape}" size="20" maxlength="40" class="textField" /></td>
 	</tr>
 	<tr valign="top">
 		<td class="label">{fieldLabel name="lastName" required="true" key="user.lastName"}</td>
-		<td class="value"><input type="text" name="lastName" id="lastName" value="{$lastName|escape}" size="20" maxlength="90" class="textField" /></td>
+		<td class="value"><input type="text" name="lastName[{$formLocale|escape}]" id="lastName" value="{$lastName[$formLocale]|escape}" size="20" maxlength="90" class="textField" /></td>
 	</tr>
 	<tr valign="top">
 		<td class="label">{fieldLabel suppressId="true" name="gender" key="user.gender"}</td>
@@ -274,4 +274,3 @@
 {/if}
 
 {include file="common/footer.tpl"}
-

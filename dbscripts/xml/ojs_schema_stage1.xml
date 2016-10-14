@@ -83,7 +83,7 @@
 		<field name="original_style_file_name" type="C2" size="255"/>
 		<descr>Common site settings.</descr>
 	</table>
-	
+
 	<!--
 	  *
 	  * TABLE site_settings
@@ -135,13 +135,9 @@
 			<NOTNULL/>
 		</field>
 		<field name="salutation" type="C2" size="40"/>
-		<field name="first_name" type="C2" size="40">
-			<NOTNULL/>
-		</field>
-		<field name="middle_name" type="C2" size="40"/>
-		<field name="last_name" type="C2" size="90">
-			<NOTNULL/>
-		</field>
+		<field name="first_name" type="X"/>
+		<field name="middle_name" type="X"/>
+		<field name="last_name" type="X"/>
 		<field name="signature" type="X"/>
 		<field name="gender" type="C" size="1"/>
 		<field name="initials" type="C2" size="5"/>
@@ -284,7 +280,7 @@
 		</field>
 		<descr>Journals and basic journal settings.</descr>
 	</table>
-	
+
 	<!--
 	  *
 	  * TABLE journal_settings
@@ -308,7 +304,7 @@
 		</field>
 		<descr>Journal settings.</descr>
 	</table>
-	
+
 	<!--
 	  *
 	  * TABLE plugin_settings
@@ -335,7 +331,7 @@
 		</field>
 		<descr>Journal settings.</descr>
 	</table>
-	
+
 	<!--
 	  *
 	  * TABLE roles
@@ -417,7 +413,7 @@
 		<field name="policy" type="X"/>
 		<descr>Journal sections.</descr>
 	</table>
-	
+
 	<!--
 	  *
 	  * TABLE section_settings
@@ -441,7 +437,7 @@
 		</field>
 		<descr>Section-specific settings</descr>
 	</table>
-	
+
 	<!--
 	  *
 	  * TABLE section_editors
@@ -467,7 +463,7 @@
 		</field>
 		<descr>Assignments of section editors to sections.</descr>
 	</table>
-	
+
 	<!--
 	  *
 	  * TABLE issues
@@ -647,7 +643,7 @@
 		<field name="pages" type="C2" size="255"/>
 		<descr>Journal articles.</descr>
 	</table>
-	
+
 	<!--
 	  *
 	  * TABLE article_settings
@@ -761,13 +757,9 @@
 			<NOTNULL/>
 			<DEFAULT VALUE="0"/>
 		</field>
-		<field name="first_name" type="C2" size="40">
-			<NOTNULL/>
-		</field>
-		<field name="middle_name" type="C2" size="40"/>
-		<field name="last_name" type="C2" size="90">
-			<NOTNULL/>
-		</field>
+		<field name="first_name" type="X"/>
+		<field name="middle_name" type="X"/>
+		<field name="last_name" type="X"/>
 		<field name="affiliation" type="C2" size="255"/>
 		<field name="country" type="C2" size="90"/>
 		<field name="email" type="C2" size="90">
@@ -777,7 +769,7 @@
 		<field name="biography" type="X"/>
 		<descr>Author metadata for articles.</descr>
 	</table>
-	
+
 	<!--
 	  *
 	  * TABLE article_author_settings
@@ -849,7 +841,7 @@
 		<field name="assoc_id" type="I8"/>
 		<descr>Files associated with articles. Includes submission files, supplementary files, etc.</descr>
 	</table>
-	
+
 	<!--
 	  *
 	  * TABLE article_supplementary_files
@@ -946,7 +938,7 @@
 		</field>
 		<descr>Article submission notes added by editors to each submission</descr>
 	</table>
-	
+
 	<!--
 	  *
 	  * TABLE edit_assignments
@@ -976,7 +968,7 @@
 		<field name="date_underway" type="T"/>
 		<descr>Editing assignments.</descr>
 	</table>
-	
+
 	<!--
 	  *
 	  * TABLE edit_decisions
@@ -1004,7 +996,7 @@
 		</field>
 		<descr>Editor decisions.</descr>
 	</table>
-	
+
 	<!--
 	  *
 	  * TABLE review_rounds
@@ -1019,8 +1011,8 @@
 		</field>
 		<field name="review_revision" type="I8" />
 		<descr>Review rounds.</descr>
-	</table>		
-		
+	</table>
+
 	<!--
 	  *
 	  * TABLE review_assignments
@@ -1071,7 +1063,7 @@
 		</field>
 		<descr>Reviewing assignments.</descr>
 	</table>
-	
+
 	<!--
 	  *
 	  * TABLE copyed_assignments
@@ -1106,7 +1098,7 @@
 		<field name="final_revision" type="I8"/>
 		<descr>Copyediting assignments.</descr>
 	</table>
-	
+
 	<!--
 	  *
 	  * TABLE layouted_assignments
@@ -1130,7 +1122,7 @@
 		<field name="layout_file_id" type="I8"/>
 		<descr>Layout editing assignments.</descr>
 	</table>
-	
+
 	<!--
 	  *
 	  * TABLE article_galleys
@@ -1164,7 +1156,7 @@
 		</field>
 		<descr>Article galleys.</descr>
 	</table>
-	
+
 	<!--
 	  *
 	  * TABLE article_html_galley_images
@@ -1179,7 +1171,7 @@
 		</field>
 		<descr>Images associated with an article HTML galley.</descr>
 	</table>
-	
+
 	<!--
 	  *
 	  * TABLE proof_assignments
@@ -1211,7 +1203,7 @@
 
 		<descr>Proofreading assignments.</descr>
 	</table>
-	
+
 	<!--
 	  *
 	  * TABLE article_event_log
@@ -1241,7 +1233,7 @@
 		<field name="message" type="X"/>
 		<descr>A log of all events associated with a submission.</descr>
 	</table>
-	
+
 	<!--
 	  *
 	  * TABLE article_email_log
@@ -1273,7 +1265,7 @@
 		<field name="body" type="X"/>
 		<descr>A log of all emails sent out related to a submission.</descr>
 	</table>
-	
+
 	<!--
 	  *
 	  * TABLE article_comments
@@ -1306,7 +1298,7 @@
 		<field name="viewable" type="I1" />
 		<descr>Comments posted on articles.</descr>
 	</table>
-	
+
 	<!--
 	  *
 	  * TABLE email_templates_default
@@ -1333,7 +1325,7 @@
 		<field name="to_role_id" type="I8"/>
 		<descr>Default journal email templates.</descr>
 	</table>
-	
+
 	<!--
 	  *
 	  * TABLE email_templates_default_data
@@ -1355,7 +1347,7 @@
 		<field name="description" type="X"/>
 		<descr>Default data for journal email templates.</descr>
 	</table>
-	
+
 	<!--
 	  *
 	  * TABLE email_templates
@@ -1379,7 +1371,7 @@
 		</field>
 		<descr>Templates for journal emails.</descr>
 	</table>
-	
+
 	<!--
 	  *
 	  * TABLE email_templates_data
@@ -1403,7 +1395,7 @@
 		<field name="body" type="X"/>
 		<descr>Data for journal email templates.</descr>
 	</table>
-	
+
 	<!--
 	 *
 	 * TABLE article_search_keyword_list
@@ -1419,7 +1411,7 @@
 		</field>
 		<descr>List of all keywords.</descr>
 	</table>
-	
+
 	<!--
 	 *
 	 * TABLE article_search_objects
@@ -1442,7 +1434,7 @@
 		</field>
 		<descr>Indexed objects.</descr>
 	</table>
-	
+
 	<!--
 	 *
 	 * TABLE article_search_object_keywords
@@ -1461,10 +1453,10 @@
 		</field>
 		<descr>Keyword occurrences for each indexed object.</descr>
 	</table>
-	
-	
+
+
 	<!-- OAI Tables -->
-	
+
 	<!--
 	 *
 	 * TABLE oai_resumption_tokens
@@ -1483,10 +1475,10 @@
 		<field name="params" type="X" />
 		<descr>Resumption tokens for the OAI protocol interface.</descr>
 	</table>
-	
-	
+
+
 	<!-- Reading Tools Tables -->
-	
+
 	<!--
 	 *
 	 * TABLE rt_versions
@@ -1512,7 +1504,7 @@
 		<field name="description" type="X"/>
 		<descr>Reading Tools versions.</descr>
 	</table>
-	
+
 	<!--
 	 *
 	 * TABLE rt_contexts
@@ -1555,7 +1547,7 @@
 		</field>
 		<descr>Reading Tools contexts (within versions).</descr>
 	</table>
-	
+
 	<!--
 	 *
 	 * TABLE rt_searches
@@ -1585,7 +1577,7 @@
 
 	<!--
 	 *
-	 * TABLE subscription_types 
+	 * TABLE subscription_types
 	 *
 	 -->
 	<table name="subscription_types">
@@ -1685,7 +1677,7 @@
 
 	<!--
 	 *
-	 * TABLE announcement_types 
+	 * TABLE announcement_types
 	 *
 	 -->
 	<table name="announcement_types">
@@ -1702,7 +1694,7 @@
 		<descr>Journal announcement types.</descr>
 	</table>
 
-	<!-- 
+	<!--
 	  *
 	  * TABLE announcement_type_settings
 	  *
@@ -1727,7 +1719,7 @@
 
 	<!--
 	 *
-	 * TABLE announcements 
+	 * TABLE announcements
 	 *
 	 -->
 	<table name="announcements">
@@ -1757,7 +1749,7 @@
 		<descr>Journal announcements</descr>
 	</table>
 
-	<!-- 
+	<!--
 	  *
 	  * TABLE announcement_settings
 	  *
@@ -1855,7 +1847,7 @@
 		<descr>Access keys are used to provide pseudo-login functionality for security-minimal tasks. Passkeys can be emailed directly to users, who can use them for a limited time in lieu of standard username and password.</descr>
 	</table>
 
-	<!-- 
+	<!--
 	  *
 	  * TABLE groups
 	  *
@@ -1884,7 +1876,7 @@
 		</field>
 	</table>
 
-	<!-- 
+	<!--
 	  *
 	  * TABLE group_settings
 	  *
@@ -1906,8 +1898,8 @@
 		</field>
 		<descr>Language dependent group data.</descr>
 	</table>
-	
-	<!-- 
+
+	<!--
 	  *
 	  * TABLE group_memberships
 	  *

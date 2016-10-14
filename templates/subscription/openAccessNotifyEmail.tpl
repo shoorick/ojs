@@ -16,7 +16,7 @@ Content-Transfer-Encoding: quoted-printable
 {$article->getLocalizedTitle()|strip_tags}{if $article->getPages()} ({$article->getPages()}){/if}
 
 {foreach from=$article->getAuthors() item=author name=authorList}
-	{$author->getFullName()}{if !$smarty.foreach.authorList.last},{/if}{/foreach}
+	{$author->getLocalizedFullName()}{if !$smarty.foreach.authorList.last},{/if}{/foreach}
 
 {/foreach}
 
@@ -63,9 +63,9 @@ Content-Transfer-Encoding: quoted-printable
 						</td>
 					</tr>
 					<tr>
-						<td style="padding-left: 30px;font-style: italic;">
+						<td style="padding-left: 30px;font-style: italic;">{* FIXME Replace style with class *}
 							{foreach from=$article->getAuthors() item=author name=authorList}
-								{$author->getFullName()|escape}{if !$smarty.foreach.authorList.last},{/if}
+								{$author->getLocalizedFullName()|escape}{if !$smarty.foreach.authorList.last},{/if}
 							{/foreach}
 						</td>
 						<td align="right">{if $article->getPages()}{$article->getPages()|escape}{else}&nbsp;{/if}</td>

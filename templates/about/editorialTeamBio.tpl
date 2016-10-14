@@ -45,7 +45,7 @@
 </script>
 {/literal}
 
-{assign var=pageTitleTranslated value=$user->getFullName()|escape}
+{assign var=pageTitleTranslated value=$user->getFullName()|escape}{* FIXME getLocalizedFullName causes error *}
 {if !$pageTitleTranslated}{translate|assign:"pageTitleTranslated" key=$pageTitle}{/if}
 
 <div id="container">
@@ -102,4 +102,3 @@
 </div><!-- container -->
 </body>
 </html>
-

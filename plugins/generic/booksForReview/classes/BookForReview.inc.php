@@ -91,7 +91,9 @@ class BookForReview extends DataObject {
 			if (!empty($str)) {
 				$str .= $separator;
 			}
-			$str .= $lastOnly ? $a->getLastName() : $a->getFullName();
+			$str .= $lastOnly
+				? $a->getLocalizedLastName()
+				: $a->getLocalizedFullName();
 		}
 		return $str;
 	}
@@ -153,7 +155,7 @@ class BookForReview extends DataObject {
 
 	/**
 	 * Get the user's full name assigned to the book for review.
-	 * @return string 
+	 * @return string
 	 */
 	function getUserFullName() {
 		$user =& $this->getUser();
@@ -162,7 +164,7 @@ class BookForReview extends DataObject {
 
 	/**
 	 * Get the user's email assigned to the book for review.
-	 * @return string 
+	 * @return string
 	 */
 	function getUserEmail() {
 		$user =& $this->getUser();
@@ -171,7 +173,7 @@ class BookForReview extends DataObject {
 
 	/**
 	 * Get the user's mailing address assigned to the book for review.
-	 * @return string 
+	 * @return string
 	 */
 	function getUserMailingAddress() {
 		$user =& $this->getUser();
@@ -180,7 +182,7 @@ class BookForReview extends DataObject {
 
 	/**
 	 * Get the user's country assigned to the book for review.
-	 * @return string 
+	 * @return string
 	 */
 	function getUserCountry() {
 		$user =& $this->getUser();
@@ -189,7 +191,7 @@ class BookForReview extends DataObject {
 
 	/**
 	 * Get the user's contact signature assigned to the book for review.
-	 * @return string 
+	 * @return string
 	 */
 	function getUserContactSignature() {
 		$user =& $this->getUser();
@@ -207,7 +209,7 @@ class BookForReview extends DataObject {
 
 	/**
 	 * Get the editor's full name assigned to the book for review.
-	 * @return string 
+	 * @return string
 	 */
 	function getEditorFullName() {
 		$editor =& $this->getEditor();
@@ -216,7 +218,7 @@ class BookForReview extends DataObject {
 
 	/**
 	 * Get the editor's email assigned to the book for review.
-	 * @return string 
+	 * @return string
 	 */
 	function getEditorEmail() {
 		$editor =& $this->getEditor();
@@ -225,7 +227,7 @@ class BookForReview extends DataObject {
 
 	/**
 	 * Get the editor's contact signature assigned to the book for review.
-	 * @return string 
+	 * @return string
 	 */
 	function getEditorContactSignature() {
 		$editor =& $this->getEditor();
@@ -234,7 +236,7 @@ class BookForReview extends DataObject {
 
 	/**
 	 * Get the editor's initials assigned to the book for review.
-	 * @return string 
+	 * @return string
 	 */
 	function getEditorInitials() {
 		$editor =& $this->getEditor();
@@ -243,7 +245,8 @@ class BookForReview extends DataObject {
 			if (!empty($initials)) {
 				return $initials;
 			} else {
-				return substr($editor->getFirstName(), 0, 1) . substr($editor->getLastName(), 0, 1);
+				return mb_substr($editor->getLocalizedFirstName(), 0, 1)
+					.    mb_substr($editor->getLocalizedLastName(),  0, 1);
 			}
 		}
 	}
@@ -298,7 +301,7 @@ class BookForReview extends DataObject {
 
 	/**
 	 * Get book for review status locale key.
-	 * @return int 
+	 * @return int
 	 */
 	function getStatusString() {
 		switch ($this->getData('status')) {
@@ -663,7 +666,7 @@ class BookForReview extends DataObject {
 	}
 
 	/**
-	 * Check whether book for review is past due date 
+	 * Check whether book for review is past due date
 	 */
 	function isLate() {
 		$dateDue = $this->getData('dateDue');

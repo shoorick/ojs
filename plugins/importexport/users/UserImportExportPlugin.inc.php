@@ -114,9 +114,6 @@ class UserImportExportPlugin extends ImportExportPlugin {
 				$users = array();
 				foreach ($userKeys as $i) {
 					$newUser = new ImportedUser();
-					$newUser->setFirstName(Request::getUserVar($i.'_firstName'));
-					$newUser->setMiddleName(Request::getUserVar($i.'_middleName'));
-					$newUser->setLastName(Request::getUserVar($i.'_lastName'));
 					$newUser->setUsername(Request::getUserVar($i.'_username'));
 					$newUser->setEmail(Request::getUserVar($i.'_email'));
 
@@ -127,6 +124,9 @@ class UserImportExportPlugin extends ImportExportPlugin {
 						}
 					}
 					$newUser->setLocales($locales);
+					$newUser->setFirstName(Request::getUserVar($i.'_firstName'), null);
+					$newUser->setMiddleName(Request::getUserVar($i.'_middleName'), null);
+					$newUser->setLastName(Request::getUserVar($i.'_lastName'), null);
 					$newUser->setSignature(Request::getUserVar($i.'_signature'), null);
 					$newUser->setBiography(Request::getUserVar($i.'_biography'), null);
 					$newUser->setTemporaryInterests(Request::getUserVar($i.'_interests'));

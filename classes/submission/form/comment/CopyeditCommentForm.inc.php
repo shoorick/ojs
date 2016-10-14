@@ -62,12 +62,12 @@ class CopyeditCommentForm extends CommentForm {
 	/**
 	 * Email the comment.
 	 */
-	function email($request) {
+	function email() {
 		$article = $this->article;
 		$roleDao =& DAORegistry::getDAO('RoleDAO');
 		$signoffDao =& DAORegistry::getDAO('SignoffDAO');
 		$userDao =& DAORegistry::getDAO('UserDAO');
-		$journal =& $request->getJournal();
+		$journal =& Request::getJournal();
 
 		// Create list of recipients:
 		$recipients = array();
@@ -129,7 +129,7 @@ class CopyeditCommentForm extends CommentForm {
 			}
 		}
 
-		parent::email($recipients, $request);
+		parent::email($recipients);
 	}
 }
 

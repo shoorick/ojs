@@ -695,7 +695,7 @@ class Issue extends DataObject {
 			if (!empty($str)) {
 				$str .= $separator;
 			}
-			$str .= $lastOnly ? $a->getLastName() : $a->getFullName();
+			$str .= $lastOnly ? $a->getLocalizedLastName() : $a->getLocalizedFullName();
 		}
 		return $str;
 	}

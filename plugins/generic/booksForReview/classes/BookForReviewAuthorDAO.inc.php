@@ -107,6 +107,7 @@ class BookForReviewAuthorDAO extends DAO {
 		$author = new BookForReviewAuthor();
 		$author->setId($row['author_id']);
 		$author->setBookId($row['book_id']);
+		// FIXME set*Name should use locale
 		$author->setFirstName($row['first_name']);
 		$author->setMiddleName($row['middle_name']);
 		$author->setLastName($row['last_name']);
@@ -120,7 +121,7 @@ class BookForReviewAuthorDAO extends DAO {
 	/**
 	 * Insert a new BookForReviewAuthor.
 	 * @param $author BookForReviewAuthor
-	 */	
+	 */
 	function insertAuthor(&$author) {
 		$this->update(
 			'INSERT INTO books_for_review_authors
@@ -129,9 +130,9 @@ class BookForReviewAuthorDAO extends DAO {
 				(?, ?, ?, ?, ?)',
 			array(
 				$author->getBookId(),
-				$author->getFirstName(),
-				$author->getMiddleName() . '', // make non-null
-				$author->getLastName(),
+				$author->getFirstName(null), // Localized
+				$author->getMiddleName(null) . '', // make non-null, Localized
+				$author->getLastName(null), // Localized
 				$author->getSequence()
 			)
 		);
@@ -145,6 +146,7 @@ class BookForReviewAuthorDAO extends DAO {
 	 * @param $author BookForReviewAuthor
 	 */
 	function updateAuthor(&$author) {
+		// FIXME Localize names
 		$returner = $this->update(
 			'UPDATE books_for_review_authors
 				SET
@@ -154,9 +156,9 @@ class BookForReviewAuthorDAO extends DAO {
 					seq = ?
 				WHERE author_id = ?',
 			array(
-				$author->getFirstName(),
-				$author->getMiddleName() . '', // make non-null
-				$author->getLastName(),
+				$author->getFirstName(null), // Localized
+				$author->getMiddleName(null) . '', // make non-null, Localized
+				$author->getLastName(null), // Localized
 				$author->getSequence(),
 				$author->getId()
 			)

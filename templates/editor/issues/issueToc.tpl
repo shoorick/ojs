@@ -93,7 +93,7 @@ $(document).ready(function() {
 		<td><a href="{url op="moveArticleToc" d=u id=$article->getPublishedArticleId()}" class="plain">&uarr;</a>&nbsp;<a href="{url op="moveArticleToc" d=d id=$article->getPublishedArticleId()}" class="plain">&darr;</a></td>
 		<td>
 			{foreach from=$article->getAuthors() item=author name=authorList}
-				{$author->getLastName()|escape}{if !$smarty.foreach.authorList.last},{/if}
+        {$author->getLocalizedLastName()|escape}{if !$smarty.foreach.authorList.last},{/if}
 			{/foreach}
 		</td>
 		<td class="drag">{if !$isLayoutEditor}<a href="{url op="submission" path=$articleId}" class="action">{/if}{$article->getLocalizedTitle()|strip_tags|truncate:60:"..."}{if !$isLayoutEditor}</a>{/if}</td>
@@ -135,4 +135,3 @@ $(document).ready(function() {
 {/if}
 
 {include file="common/footer.tpl"}
-

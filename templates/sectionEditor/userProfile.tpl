@@ -13,7 +13,7 @@
 {include file="common/header.tpl"}
 {/strip}
 
-<h3>{translate key="user.profile"}: {$user->getFullName()|escape}</h3>
+<h3>{translate key="user.profile"}: {$user->getLocalizedFullName()|escape}</h3>
 
 <table class="data" width="100%">
 <tr valign="top">
@@ -26,15 +26,15 @@
 </tr>
 <tr valign="top">
 	<td class="label">{translate key="user.firstName"}:</td>
-	<td class="value">{$user->getFirstName()|escape}</td>
+	<td class="value">{$user->getLocalizedFirstName()|escape}</td>
 </tr>
 <tr valign="top">
 	<td class="label">{translate key="user.middleName"}:</td>
-	<td class="value">{$user->getMiddleName()|escape}</td>
+	<td class="value">{$user->getLocalizedMiddleName()|escape}</td>
 </tr>
 <tr valign="top">
 	<td class="label">{translate key="user.lastName"}:</td>
-	<td class="value">{$user->getLastName()|escape}</td>
+	<td class="value">{$user->getLocalizedLastName()|escape}</td>
 </tr>
 <tr valign="top">
 	<td class="label">{translate key="user.gender"}</td>
@@ -110,4 +110,3 @@
 </table>
 
 {include file="common/footer.tpl"}
-

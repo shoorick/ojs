@@ -18,7 +18,7 @@
 <div id="authors">
 {iterate from=authors item=author}
 	{assign var=lastFirstLetter value=$firstLetter}
-	{assign var=firstLetter value=$author->getLastName()|String_substr:0:1}
+	{assign var=firstLetter value=$author->getLocalizedLastName()|String_substr:0:1}
 
 	{if $lastFirstLetter|lower != $firstLetter|lower}
 			<div id="{$firstLetter|escape}">
@@ -31,10 +31,10 @@
 	{assign var=authorAffiliation value=$author->getLocalizedAffiliation()}
 	{assign var=authorCountry value=$author->getCountry()}
 
-	{assign var=authorFirstName value=$author->getFirstName()}
-	{assign var=authorMiddleName value=$author->getMiddleName()}
-	{assign var=authorLastName value=$author->getLastName()}
-	{assign var=authorName value="$authorLastName, $authorFirstName"}
+	{assign var=authorFirstName  value=$author->getLocalizedFirstName()}
+	{assign var=authorMiddleName value=$author->getLocalizedMiddleName()}
+	{assign var=authorLastName   value=$author->getLocalizedLastName()}
+	{assign var=authorName       value="$authorLastName, $authorFirstName"}
 
 	{if $authorMiddleName != ''}{assign var=authorName value="$authorName $authorMiddleName"}{/if}
 	{strip}
@@ -51,4 +51,3 @@
 {/if}
 </div>
 {include file="common/footer.tpl"}
-

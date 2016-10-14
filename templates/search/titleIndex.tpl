@@ -52,9 +52,9 @@
 	</td>
 </tr>
 <tr>
-	<td colspan="{$numCols|escape}" style="padding-left: 30px;font-style: italic;">
+	<td colspan="{$numCols|escape}" style="padding-left: 30px;font-style: italic;">{* FIXME replace style with class *}
 		{foreach from=$article->getAuthors() item=author name=authorList}
-			{$author->getFullName()|escape}{if !$smarty.foreach.authorList.last},{/if}
+      {$author->getLocalizedFullName()|escape}{if !$smarty.foreach.authorList.last},{/if}
 		{/foreach}
 	</td>
 </tr>
@@ -74,4 +74,3 @@
 </table>
 </div>
 {include file="common/footer.tpl"}
-

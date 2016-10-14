@@ -59,10 +59,10 @@ class LayoutCommentForm extends CommentForm {
 	/**
 	 * Email the comment.
 	 */
-	function email($request) {
+	function email() {
 		$roleDao =& DAORegistry::getDAO('RoleDAO');
 		$userDao =& DAORegistry::getDAO('UserDAO');
-		$journal =& $request->getJournal();
+		$journal =& Request::getJournal();
 
 		// Create list of recipients:
 
@@ -104,7 +104,7 @@ class LayoutCommentForm extends CommentForm {
 			$recipients = array_merge($recipients, $editorAddresses);
 		}
 
-		parent::email($recipients, $request);
+		parent::email($recipients);
 	}
 }
 
